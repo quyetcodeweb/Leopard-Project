@@ -62,13 +62,17 @@ LeopardProject/
 
 ### Bước 1️⃣: Clone project
 
+```bash
 git clone https://github.com/<your-username>/Leopard-Project.git
 cd LeopardProject
+```
 
 ### Bước 2️⃣: Cài đặt backend
 
+```bash
 cd backend
 npm install
+```
 
 ### Tạo file .env dựa trên .env.example:
 
@@ -83,34 +87,48 @@ JWT_SECRET=your_secret_key
 
 ### Chạy server backend:
 
+```bash
 npm run dev
+```
 
 ### Mặc định server chạy tại: http://localhost:5000
 
 ## Bước 3️⃣: Cài đặt frontend
 
+```bash
 cd ../frontend
 npm install
 npm start
+```
 
 Mặc định frontend chạy tại: http://localhost:3000
 
 # 📡 4. Git và làm việc nhóm
 
 🔹 Trước khi tạo nhánh mới
+
+```bash
 git checkout main
 git pull origin main
+```
 
 🔹 Tạo nhánh
+
+```bash
 git checkout -b feature/<Tên nhánh>
+```
 
 🔹 Push code
+
+```bash
 git add .
 git commit -m "Mô tả tính năng"
 git push origin feature/<Tên nhánh>
+```
 
 🔹 Lưu ý
 
+```text
 Không commit node_modules/ hoặc file .env
 
 Luôn pull trước khi code để cập nhật mới nhất
@@ -118,3 +136,4 @@ Luôn pull trước khi code để cập nhật mới nhất
 Ghi commit message rõ ràng
 
 Review code trước khi merge
+```
