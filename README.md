@@ -72,12 +72,14 @@ npm install
 
 ### Tạo file .env dựa trên .env.example:
 
+```bash
 PORT=5000
 DB_HOST=localhost
 DB_USER=root
 DB_PASS=
 DB_NAME=leoparddb
 JWT_SECRET=your_secret_key
+```
 
 ### Chạy server backend:
 
