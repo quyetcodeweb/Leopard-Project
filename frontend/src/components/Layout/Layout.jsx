@@ -3,7 +3,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import Topbar from "../Topbar/Topbar";
 import "./Layout.css";
 
-const Layout = ({ children, title = "Dashboard" }) => {
+const Layout = ({ title, children }) => {
   return (
     <div className="layout">
       <Sidebar />

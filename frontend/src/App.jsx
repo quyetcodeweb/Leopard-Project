@@ -1,13 +1,19 @@
 import React from "react";
-import Layout from "./components/Layout/Layout";
-import ProductList from "./pages/Products/ProductList";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import ProductPage from "./pages/Products/ProductPage";
 
-function App() {
+const App = () => {
   return (
-    <Layout>
-      <ProductList />
-    </Layout>
+    <Router>
+      <Routes>
+        {/* Route mặc định */}
+        <Route path="/" element={<Navigate to="/products" />} />
+
+        {/* Trang sản phẩm */}
+        <Route path="/products" element={<ProductPage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

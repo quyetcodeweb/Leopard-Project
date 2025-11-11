@@ -7,7 +7,7 @@
   justify-content: space-between;
   padding: 0 24px;
   position: fixed;
-  left: 260px; /* trùng với width sidebar */
+  left: 260px; 
   top: 0;
   right: 0;
   z-index: 20;
