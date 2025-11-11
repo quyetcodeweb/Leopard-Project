@@ -1,0 +1,185 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid #e6e6e6;
+  padding: 18px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ==== LOGO ==== */
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0b63d6;
+  margin-bottom: 14px;
+}
+
+/* ==== USER BLOCK ==== */
+.user-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 14px;
+}
+
+.sidebar-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #888;
+}
+
+/* ==== MENU ==== */
+.sidebar-section h4 {
+  font-size: 13px;
+  color: #888;
+  margin: 10px 0 8px;
+}
+
+.sidebar-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+}
+
+.sidebar-section li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s;
+  color: #333;
+}
+
+.sidebar-section li:hover,
+.sidebar-section li.active {
+  background-color: #f0f6ff;
+  color: #0b63d6;
+}
+
+/* ==== DARK MODE TOGGLE ==== */
+.darkmode {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  font-size: 13px;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-switch {
+  width: 40px;
+  height: 22px;
+  background-color: #ddd;
+  border-radius: 50px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.switch-circle {
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active {
+  background-color: #0b63d6;
+}
+
+.toggle-switch.active .switch-circle {
+  left: 20px;
+}
+
+/* ==== DARK MODE ==== */
+.sidebar.dark {
+  background: #1f1f1f;
+  color: #eee;
+}
+
+.sidebar.dark .sidebar-section li {
+  color: #ccc;
+}
+
+.sidebar.dark .sidebar-section li:hover,
+.sidebar.dark .sidebar-section li.active {
+  background-color: #333;
+  color: #fff;
+}
+
+.sidebar.dark .darkmode {
+  color: #ccc;
+}
+
+.sidebar.dark .toggle-switch {
+  background: #555;
+}
+
+.sidebar.dark .toggle-switch.active {
+  background: #2196f3;
+}
+/* === DROPDOWN === */
+.dropdown-list {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  padding-left: 40px;
+  margin: 0; 
+  pointer-events: none; /* tránh click vào khi ẩn */
+}
+
+.dropdown-list.show {
+  max-height: 200px; /* đủ chứa 4 mục */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dropdown-list li {
+  list-style: none;
+  font-size: 14px;
+  padding: 6px 0;
+  color: #555;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.dropdown-list li:hover {
+  background: #f4f4f4;
+}
