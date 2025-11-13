@@ -1,5 +1,11 @@
+:root {
+  --sidebar-width: 260px; /* trùng Sidebar */
+  --topbar-height: 60px;
+}
+
+/* ==== TOPBAR ==== */
 .topbar {
-  height: 60px;
+  height: var(--topbar-height);
   background: #fff;
   border-bottom: 1px solid #e6e6e6;
   display: flex;
@@ -7,27 +13,56 @@
   justify-content: space-between;
   padding: 0 24px;
   position: fixed;
-  left: 260px; 
+  left: var(--sidebar-width); /* dùng biến thay vì số cứng */
   top: 0;
   right: 0;
   z-index: 20;
   box-sizing: border-box;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+/* Tiêu đề trang */
 .page-title {
   font-size: 18px;
   font-weight: 700;
-  color: #222;
+  color: #222; /* thêm màu sáng ở light mode */
+  transition: color 0.3s;
 }
 
+/* Bên phải (chuông, user...) */
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
+/* Chuông thông báo */
 .bell {
   color: #666;
   font-size: 20px;
   cursor: pointer;
+  transition: color 0.3s;
+}
+
+.bell:hover {
+  color: #0b63d6;
+}
+
+/* ==== DARK MODE ==== */
+.topbar.dark {
+  background: #1f1f1f;
+  border-bottom: 1px solid #333;
+}
+
+.topbar.dark .page-title {
+  color: #eee; /* ✅ Giúp chữ “Sản phẩm” đổi sang trắng */
+}
+
+.topbar.dark .bell {
+  color: #ccc;
+}
+
+.topbar.dark .bell:hover {
+  color: #2196f3;
 }
