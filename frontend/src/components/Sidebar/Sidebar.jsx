@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; //thêm ở đây
+import { useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import {
   FaUsers,
@@ -15,7 +15,7 @@ import {
 const Sidebar = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [openOrder, setOpenOrder] = useState(false);
-  const navigate = useNavigate(); // thêm ở đây
+  const navigate = useNavigate();
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -25,7 +25,7 @@ const Sidebar = () => {
     setOpenOrder(!openOrder);
   };
 
-  //thêm ở đâu
+  //điều hướng đơn hàng
   const goToOrderStatus = (status) => {
     navigate(`/donhang?status=${status}`);
   };
@@ -60,7 +60,7 @@ const Sidebar = () => {
           <li>
             <FaTags /> <span>Mã giảm giá</span>
           </li>
-          
+
           {/* === ĐƠN HÀNG === */}
           <li
             className="dropdown-btn"
@@ -85,7 +85,6 @@ const Sidebar = () => {
               Đã hủy
             </li>
           </div>
-          
           <li className="active">
             <FaBox /> <span>Sản phẩm</span>
           </li>

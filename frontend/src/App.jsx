@@ -20,7 +20,7 @@ function App() {
         <Route path="/chitietdonhang/:id" element={<Chitietdonhang />} />
         <Route path="/lichsudonhang" element={<Lichsudonhang />} />
         <Route path="/chitietlsdonhang/:id" element={<Chitietlsdonhang />} />
-        <Route path="/" element={<Lichsudonhang/>} />
+        <Route path="/" element={<Donhang/>} />
       </Routes>
     </Layout>
   );

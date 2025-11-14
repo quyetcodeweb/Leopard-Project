@@ -6,18 +6,27 @@ const Chitietdonhang = ({ orderID, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Lấy chi tiết đơn hàng
+  const fetchOrder = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/donhang/${orderID}`);
+
+      // Chuyển trạng thái "Hoàn thành" thành "Đã giao"
+      const data = {
+        ...res.data,
+        trangThai: res.data.trangThai === "Hoàn thành" ? "Đã giao" : res.data.trangThai,
+      };
+
+      setDonHang(data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError("Không thể tải chi tiết đơn hàng");
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5000/api/donhang/${orderID}`);
-        setDonHang(res.data);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setError("Không thể tải chi tiết đơn hàng");
-        setLoading(false);
-      }
-    };
     fetchOrder();
   }, [orderID]);
 
@@ -26,6 +35,30 @@ const Chitietdonhang = ({ orderID, onClose }) => {
   if (!donHang) return <div className="text-center mt-5">Không tìm thấy đơn hàng.</div>;
 
   const formatCurrency = (amount) => (amount || 0).toLocaleString("vi-VN") + "₫";
+
+  // Xác nhận đơn hàng => chuyển sang "Đã giao"
+  const handleConfirm = async () => {
+    try {
+      await axios.put(`http://localhost:5000/api/donhang/${donHang.maDonHang}/confirm`);
+      setDonHang(prev => ({ ...prev, trangThai: "Đã giao" }));
+      alert("Đơn hàng đã giao");
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Lỗi khi xác nhận đơn hàng!");
+    }
+  };
+
+  // Hủy đơn hàng => "Đã hủy"
+  const handleCancel = async () => {
+    try {
+      await axios.put(`http://localhost:5000/api/donhang/${donHang.maDonHang}/cancel`);
+      setDonHang(prev => ({ ...prev, trangThai: "Đã hủy" }));
+      alert("Đơn hàng đã hủy");
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Lỗi khi hủy đơn hàng!");
+    }
+  };
 
   return (
     <div
@@ -90,52 +123,27 @@ const Chitietdonhang = ({ orderID, onClose }) => {
               {/* Nút Xác nhận / Hủy chỉ khi Đang xử lý */}
               {donHang.trangThai === "Đang xử lý" && (
                 <div className="d-flex gap-2">
-                  {/* Nút Xác nhận */}
-              {/* Nút Xác nhận */}
-              <button
-                className="btn"
-                style={{ backgroundColor: "#198754", color: "white" }}
-                onClick={async () => {
-                  try {
-                    await axios.put(
-                      `http://localhost:5000/api/deliver/${donHang.maDonHang}/complete`
-                    );
-                    alert("Đơn hàng đã hoàn thành");
-                    window.location.reload(); // reload trang sau khi xác nhận
-                  } catch (err) {
-                    console.error(err);
-                    alert(err.response?.data?.message || "Lỗi khi xác nhận đơn hàng!");
-                  }
-                }}
-              >
-                Xác nhận
-              </button>
+                  <button
+                    className="btn"
+                    style={{ backgroundColor: "#198754", color: "white" }}
+                    onClick={handleConfirm}
+                  >
+                    Xác nhận
+                  </button>
 
-              {/* Nút Hủy */}
-              <button
-                className="btn"
-                style={{
-                  backgroundColor: "#BD0C0C",
-                  color: "white",
-                  fontWeight: "500",
-                  width: "107px",
-                  height: "37px",
-                }}
-                onClick={async () => {
-                  try {
-                    await axios.put(
-                      `http://localhost:5000/api/donhang/${donHang.maDonHang}/cancel`
-                    );
-                    alert("Đơn hàng đã hủy");
-                    window.location.reload(); // reload trang sau khi hủy
-                  } catch (err) {
-                    console.error(err);
-                    alert(err.response?.data?.message || "Lỗi khi hủy đơn hàng!");
-                  }
-                }}
-              >
-                Hủy
-              </button>
+                  <button
+                    className="btn"
+                    style={{
+                      backgroundColor: "#BD0C0C",
+                      color: "white",
+                      fontWeight: "500",
+                      width: "107px",
+                      height: "37px",
+                    }}
+                    onClick={handleCancel}
+                  >
+                    Hủy
+                  </button>
                 </div>
               )}
             </div>

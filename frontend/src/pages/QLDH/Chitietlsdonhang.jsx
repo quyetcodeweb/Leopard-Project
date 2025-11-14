@@ -3,19 +3,23 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-const ChiTietlsDonHang = ({ orderID, onClose }) => {
+const Chitietlsdonhang = ({ orderID, onClose }) => {
   const [donHang, setDonHang] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Ref để lấy DOM
   const printRef = useRef();
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/api/donhang/${orderID}`);
-        setDonHang(res.data);
+        const data = res.data;
+
+        // Chỉ hiển thị 2 trạng thái: "Đã giao" hoặc "Đã hủy"
+        const trangThaiHienThi = data.Status === "Đã hủy" ? "Đã hủy" : "Đã giao";
+
+        setDonHang({ ...data, trangThai: trangThaiHienThi });
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -32,7 +36,6 @@ const ChiTietlsDonHang = ({ orderID, onClose }) => {
     if (!printRef.current) return;
     const element = printRef.current;
 
-    // Tạm thời ẩn phần nút
     const buttons = element.querySelectorAll("button");
     buttons.forEach(btn => btn.style.display = "none");
 
@@ -51,7 +54,6 @@ const ChiTietlsDonHang = ({ orderID, onClose }) => {
       alert("Xuất PDF thất bại");
     }
 
-    // Hiện lại nút sau khi xuất xong
     buttons.forEach(btn => btn.style.display = "inline-block");
   };
 
@@ -87,21 +89,22 @@ const ChiTietlsDonHang = ({ orderID, onClose }) => {
       >
         <h2 className="text-center mb-5 fw-bold">Chi tiết đơn hàng</h2>
 
-        {/* Thông tin khách hàng & mã, trạng thái, ngày tạo */}
         <div className="row mb-4" style={{ fontSize: "1rem" }}>
+          {/* Cột trái: thông tin khách hàng */}
           <div className="col-8">
             <div><strong>Khách hàng:</strong> {donHang.khachHang.ten}</div>
             <div><strong>SĐT:</strong> {donHang.khachHang.sdt}</div>
             <div><strong>Địa chỉ:</strong> {donHang.khachHang.diachi}</div>
           </div>
-          <div className="col-4 text-end">
+
+          {/* Cột phải: mã đơn hàng, trạng thái, ngày tạo */}
+          <div className="col-4 text-end d-flex flex-column justify-content-center" style={{ gap: "0.5rem" }}>
             <div><strong>Mã đơn hàng:</strong> {donHang.maDonHang}</div>
             <div><strong>Trạng thái:</strong> {donHang.trangThai}</div>
             <div><strong>Ngày tạo:</strong> {new Date(donHang.ngayTao).toLocaleString("vi-VN")}</div>
           </div>
         </div>
 
-        {/* Bảng sản phẩm */}
         <div className="table-responsive">
           <table className="table table-striped">
             <thead>
@@ -125,7 +128,6 @@ const ChiTietlsDonHang = ({ orderID, onClose }) => {
           </table>
         </div>
 
-        {/* Tổng tiền & nút PDF/Print/Close */}
         <div className="d-flex justify-content-between align-items-center mt-3 pt-3" style={{ borderTop: "1px solid #dee2e6" }}>
           <h4 className="fw-bold text-success">Tổng: {formatCurrency(donHang.tongTien)}</h4>
           <div className="d-flex gap-2">
@@ -139,4 +141,4 @@ const ChiTietlsDonHang = ({ orderID, onClose }) => {
   );
 };
 
-export default ChiTietlsDonHang;
+export default Chitietlsdonhang;
