@@ -5,13 +5,12 @@ import "./Lichsudonhang.css";
 
 const Lichsudonhang = () => {
   const [donHangList, setDonHangList] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchDate, setSearchDate] = useState("");
+  const [searchMa, setSearchMa] = useState("");
+  const [searchNgay, setSearchNgay] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOrderID, setSelectedOrderID] = useState(null);
   const itemsPerPage = 5;
 
-  // Lấy dữ liệu khi load trang
   useEffect(() => {
     fetchData();
   }, []);
@@ -19,8 +18,9 @@ const Lichsudonhang = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/donhang");
+      // Lọc chỉ những đơn 'Đã giao' hoặc 'Đã hủy'
       const filtered = res.data.filter(
-        (don) => don.Status === "Hoàn thành" || don.Status === "Đã hủy"
+        (don) => don.Status === "Đã giao" || don.Status === "Đã hủy"
       );
       setDonHangList(filtered);
       setCurrentPage(1);
@@ -30,88 +30,85 @@ const Lichsudonhang = () => {
     }
   };
 
-  // Lọc theo search
-  const filteredList = donHangList.filter((don) => {
-    const matchesMa = don.OrderID.toString().includes(searchTerm);
-    const matchesDate = searchDate ? don.OrderDate.startsWith(searchDate) : true;
-    return matchesMa && matchesDate;
-  });
-
-  const totalPages = Math.ceil(filteredList.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredList.slice(startIndex, startIndex + itemsPerPage);
-
   const handleSearch = async () => {
     try {
-      let url = "http://localhost:5000/api/donhang";
-      if (searchTerm || searchDate) url = "http://localhost:5000/api/donhang/search";
+      if (!searchMa && !searchNgay) return fetchData();
 
-      const res = await axios.get(url, {
-        params: { ma: searchTerm, ngay: searchDate },
+      const res = await axios.get("http://localhost:5000/api/donhang/search", {
+        params: { ma: searchMa, ngay: searchNgay },
       });
 
       const filtered = res.data.filter(
-        (don) => don.Status === "Hoàn thành" || don.Status === "Đã hủy"
+        (don) => don.Status === "Đã giao" || don.Status === "Đã hủy"
       );
       setDonHangList(filtered);
       setCurrentPage(1);
     } catch (err) {
-      console.error(err);
-      alert("Tìm kiếm thất bại");
+      console.error(err.response?.data || err.message);
+      alert("Tìm kiếm thất bại: " + (err.response?.data?.message || err.message));
     }
   };
 
   const handleDelete = async (orderID) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa đơn hàng ${orderID}?`)) {
-      try {
-        await axios.delete(`http://localhost:5000/api/donhang/${orderID}`);
-        // Xóa trên frontend sau khi xóa thành công
-        setDonHangList((prev) => prev.filter((don) => don.OrderID !== orderID));
-        alert(`Đơn hàng ${orderID} đã được xóa thành công.`);
-      } catch (err) {
-        console.error(err);
-        alert("Xóa đơn hàng thất bại. Vui lòng thử lại.");
-      }
+    if (!window.confirm(`Bạn có chắc chắn muốn xóa đơn hàng ${orderID}?`)) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/donhang/${orderID}`);
+      setDonHangList(prev => prev.filter(don => don.OrderID !== orderID));
+      alert(`Đơn hàng ${orderID} đã được xóa.`);
+    } catch (err) {
+      console.error(err);
+      alert("Xóa đơn hàng thất bại. Vui lòng thử lại.");
     }
   };
 
-  const formatDateTime = (dateString) => {
-    const d = new Date(dateString);
-    return d.toLocaleString("vi-VN", { hour12: false });
+  // Phân trang
+  const totalPages = Math.ceil(donHangList.length / itemsPerPage);
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentOrders = donHangList.slice(indexOfFirst, indexOfLast);
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
   };
+
+  const formatDateTime = (dateString) =>
+    new Date(dateString).toLocaleString("vi-VN", { hour12: false });
 
   return (
     <div className="lichsu-container">
       <div className="lichsu-frame">
-        {/* Thanh tìm kiếm */}
+
+        {/* Thanh tìm kiếm giống Donhang */}
         <div className="search-bar">
           <input
             type="text"
             placeholder="Tìm kiếm mã..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchMa}
+            onChange={(e) => setSearchMa(e.target.value)}
           />
           <input
             type="date"
-            value={searchDate}
-            onChange={(e) => setSearchDate(e.target.value)}
+            value={searchNgay}
+            onChange={(e) => setSearchNgay(e.target.value)}
           />
           <button className="search-btn" onClick={handleSearch}>Tìm kiếm</button>
         </div>
 
-        {/* Bảng dữ liệu */}
         <div className="table-wrapper">
           <table className="table table-hover text-center align-middle">
             <thead className="table-light">
               <tr>
                 <th>Mã đơn hàng</th>
                 <th>Thời gian</th>
+                <th>Trạng thái</th>
                 <th>Thùng rác</th>
               </tr>
             </thead>
             <tbody>
-              {currentItems.length > 0 ? (
-                currentItems.map((don) => (
+              {currentOrders.length > 0 ? (
+                currentOrders.map((don) => (
                   <tr
                     key={don.OrderID}
                     style={{ cursor: "pointer" }}
@@ -119,13 +116,11 @@ const Lichsudonhang = () => {
                   >
                     <td>{don.OrderID}</td>
                     <td>{formatDateTime(don.OrderDate)}</td>
+                    <td>{don.Status}</td>
                     <td>
                       <button
                         className="btn-delete"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(don.OrderID);
-                        }}
+                        onClick={(e) => { e.stopPropagation(); handleDelete(don.OrderID); }}
                         aria-label={`Xóa đơn hàng ${don.OrderID}`}
                       >
                         🗑️
@@ -135,7 +130,7 @@ const Lichsudonhang = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="3" className="text-center">
+                  <td colSpan="4" className="text-center">
                     Không tìm thấy đơn hàng nào
                   </td>
                 </tr>
@@ -143,22 +138,19 @@ const Lichsudonhang = () => {
             </tbody>
           </table>
 
-          {/* Phân trang */}
           <div className="pagination-wrapper">
             <ul className="pagination mb-0">
               <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
                 <span
                   className="page-link"
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                >
-                  &lt;
-                </span>
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >&lt;</span>
               </li>
               {Array.from({ length: totalPages }, (_, i) => (
                 <li
                   key={i + 1}
                   className={`page-item ${currentPage === i + 1 ? "active" : ""}`}
-                  onClick={() => setCurrentPage(i + 1)}
+                  onClick={() => handlePageChange(i + 1)}
                 >
                   <span className="page-link">{i + 1}</span>
                 </li>
@@ -166,17 +158,14 @@ const Lichsudonhang = () => {
               <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
                 <span
                   className="page-link"
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                >
-                  &gt;
-                </span>
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >&gt;</span>
               </li>
             </ul>
           </div>
         </div>
       </div>
 
-      {/* Popup Chi tiết đơn hàng */}
       {selectedOrderID && (
         <ChiTietlsDonHang
           orderID={selectedOrderID}
