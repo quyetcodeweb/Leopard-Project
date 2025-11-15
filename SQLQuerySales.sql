@@ -102,6 +102,7 @@ CREATE TABLE Inventory (
 );
 ALTER TABLE Product ADD COLUMN WarningStock INT DEFAULT 5;
 ALTER TABLE Product ADD COLUMN IsActive BIT DEFAULT 1;
+ALTER TABLE Product MODIFY COLUMN Image LONGTEXT;
 
 -- 1. Category
 INSERT INTO Category (CategoryName, Description) VALUES
