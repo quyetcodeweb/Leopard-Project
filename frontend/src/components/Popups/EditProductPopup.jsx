@@ -40,26 +40,82 @@ const EditProductPopup = ({ product, onClose, onSave }) => {
   }, [product]);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "Image" && files[0]) {
-      const reader = new FileReader();
-      reader.onload = () => setForm({ ...form, Image: reader.result });
-      reader.readAsDataURL(files[0]);
-    } else {
-      setForm({ ...form, [name]: value });
+  const { name, value, files } = e.target;
+
+  // Ngăn nhập ký tự không phải số vào Price và WarningStock
+  if ((name === "Price" || name === "WarningStock") && value !== "") {
+    if (!/^\d*$/.test(value)) {
+      return; // Không cho setState → ngăn nhập chữ
     }
-  };
+  }
+
+  // Xử lý hình ảnh
+  if (name === "Image" && files && files[0]) {
+    const reader = new FileReader();
+    reader.onload = () => setForm({ ...form, Image: reader.result });
+    reader.readAsDataURL(files[0]);
+    return;
+  }
+
+  setForm({ ...form, [name]: value });
+};
+
 
   const handleSave = (e) => {
-    e.preventDefault();
-    onSave({
-      ...form,
-      Price: parseFloat(form.Price) || 0,
-      WarningStock: parseInt(form.WarningStock) || 0,
-      CategoryID: form.CategoryID ? parseInt(form.CategoryID) : null,
-      IsActive: parseInt(form.IsActive) || 0,
-    });
-  };
+  e.preventDefault();
+
+  // ===== VALIDATION =====
+
+  // 1. Validate tên sản phẩm
+  if (!form.ProductName.trim()) {
+    alert("Please fill out this field (Tên sản phẩm)");
+    return;
+  }
+  if (form.ProductName.length > 255) {
+    alert("Tên sản phẩm không hợp lệ (quá 255 ký tự)");
+    return;
+  }
+
+  // 2. Validate giá
+  if (form.Price === "" || form.Price === null) {
+    alert("Vui lòng nhập giá sản phẩm");
+    return;
+  }
+  if (isNaN(form.Price)) {
+    alert("Please enter a number (Giá)");
+    return;
+  }
+  if (form.Price.toString().length > 8) {
+    alert("Giá không hợp lệ (quá 8 chữ số)");
+    return;
+  }
+
+  // 3. Validate số lượng cảnh báo
+  if (isNaN(form.WarningStock)) {
+    alert("Please enter a number (Số lượng cảnh báo)");
+    return;
+  }
+  if (parseInt(form.WarningStock) < 0) {
+    alert("Số lượng cảnh báo phải >= 0");
+    return;
+  }
+
+  // 4. Validate danh mục
+  if (!form.CategoryID) {
+    alert("Vui lòng chọn danh mục sản phẩm");
+    return;
+  }
+
+  // ===== PASS → gửi về parent =====
+  onSave({
+    ...form,
+    Price: parseFloat(form.Price),
+    WarningStock: parseInt(form.WarningStock),
+    CategoryID: parseInt(form.CategoryID),
+    IsActive: parseInt(form.IsActive) || 0,
+  });
+};
+
 
   const handleAddCategory = () => {
     if (!newCategory.trim()) return alert("Vui lòng nhập tên danh mục!");
