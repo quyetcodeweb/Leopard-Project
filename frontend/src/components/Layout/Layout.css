@@ -10,3 +10,29 @@
   min-height: calc(100vh - 60px);
   box-sizing: border-box;
 }
+
+/* Toàn bộ màn hình */
+.layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f7fb;
+}
+
+/* Sidebar */
+.layout-sidebar {
+  width: 260px;      /* rộng hơn */
+  background: #ffffff;
+  min-height: 100vh;
+  border-right: 1px solid #e5e7eb;
+  position: fixed;   /* giữ nguyên khi scroll */
+  left: 0;
+  top: 0;
+}
+
+/* Nội dung bên phải */
+.layout-content {
+  margin-left: 260px !important;   /* CHỖ QUAN TRỌNG */
+  padding: 30px;
+  width: calc(100% - 260px);
+}

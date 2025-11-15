@@ -1,36 +1,48 @@
-// frontend/src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// frontend/src/App.jsx
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-// Import các component
-import RegisterPage from './pages/Auth/RegisterPage';
-import LoginPage from './pages/Auth/LoginPage';
-import ProductList from './pages/Products/ProductList';
-import HomePage from './pages/HomePage'; // ⭐ THÊM DÒNG NÀY
+import RegisterPage from "./pages/Auth/RegisterPage";
+import LoginPage from "./pages/Auth/LoginPage";
+import HomePage from "./pages/HomePage";
+
+// ⭐ Admin components
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import UserManager from "./pages/Admin/UserManager";
+import Dashboard from "./pages/Admin/Dashboard"; // Nếu chưa có tạo file rỗng tạm thời
 
 const App = () => {
-  // Tạm thời tắt isAuthenticated để test login
-  const isAuthenticated = true; // Đặt true tạm để test chuyển hướng
-
   return (
     <Router>
       <Routes>
-        {/* Trang đăng ký */}
+        {/* AUTH */}
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Trang đăng nhập */}
-        <Route path="/login" element={<LoginPage />} />
+        {/* User homepage */}
+        <Route path="/homepage" element={<HomePage />} />
 
-        {/* Trang chủ */}
-        <Route path="/HomePage" element={<HomePage />} /> {/* ⭐ THÊM DÒNG NÀY */}
+        {/* ⭐ ADMIN AREA */}
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedAdminRoute>
+              <Routes>
+                {/* Dashboard admin (trang mặc định sau login) */}
+                <Route path="dashboard" element={<Dashboard />} />
 
-        {/* Trang mặc định */}
+                {/* Người dùng → Quản lý phân quyền */}
+                <Route path="users" element={<UserManager />} />
+
+                {/* Mặc định khi vào /admin → tự chuyển về dashboard */}
+                <Route path="" element={<Navigate to="dashboard" replace />} />
+              </Routes>
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* Default redirect */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-
-        {/* Nếu chưa đăng nhập mà cố truy cập, đẩy về /login */}
-        {!isAuthenticated && (
-          <Route path="/*" element={<Navigate to="/login" replace />} />
-        )}
       </Routes>
     </Router>
   );

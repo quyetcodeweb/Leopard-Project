@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; 
-import '../Auth/RegisterPage.css'; 
-import '../Auth/AuthCommon.css'; 
+import axios from 'axios';
+import '../Auth/RegisterPage.css';
+import '../Auth/AuthCommon.css';
 import { FiUser, FiMail, FiLock, FiCheck } from "react-icons/fi";
-import { BsCart2 } from "react-icons/bs";
 
-// ⭐ Cấu hình API Backend (Đảm bảo Node/Express server đang chạy ở đây)
-const API_BASE_URL = 'http://localhost:5000/api/auth'; 
+const API_BASE_URL = 'http://localhost:5000/api/auth';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -21,100 +19,115 @@ const RegisterPage = () => {
 
     const [error, setError] = useState('');
     const [errorFields, setErrorFields] = useState([]);
-    const [isLoading, setIsLoading] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false);
+
+    const emailRef = useRef(null);
+    const usernameRef = useRef(null);
+    const passwordRef = useRef(null);
+    const confirmPasswordRef = useRef(null);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+
         if (errorFields.includes(e.target.name)) {
-            setErrorFields(errorFields.filter(field => field !== e.target.name));
+            setErrorFields(errorFields.filter(f => f !== e.target.name));
             setError('');
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
         setError('');
         setErrorFields([]);
-        
-        // --- BƯỚC 1: Validation ở Frontend ---
-        const requiredFields = ['username', 'email', 'password', 'confirmPassword'];
-        const missingFields = requiredFields.filter(field => !formData[field].trim());
 
-        if (missingFields.length > 0) {
-            const fieldNames = { username: 'Tên đăng nhập', email: 'Email', password: 'Mật khẩu', confirmPassword: 'Xác nhận mật khẩu' };
-            const missingFieldNames = missingFields.map(field => fieldNames[field]).join(', ');
-            setError(`Vui lòng điền thông tin ở ${missingFieldNames}.`);
-            setErrorFields(missingFields);
-            return; 
+        // --- 1. CHECK EMPTY ---
+        const required = ['username', 'email', 'password', 'confirmPassword'];
+        const missing = required.filter(f => !formData[f].trim());
+
+        if (missing.length) {
+            setError("Vui lòng điền đầy đủ thông tin.");
+            setErrorFields(missing);
+
+            const firstMissing = missing[0];
+            if (firstMissing === "username") usernameRef.current.focus();
+            if (firstMissing === "email") emailRef.current.focus();
+            if (firstMissing === "password") passwordRef.current.focus();
+            if (firstMissing === "confirmPassword") confirmPasswordRef.current.focus();
+            return;
         }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            setError('Email không hợp lệ, vui lòng nhập lại email theo định dạng example@gmail.com');
+        // --- 2. VALIDATE EMAIL (CHỈ CHẤP NHẬN GMAIL.COM) ---
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
+        if (!emailRegex.test(formData.email.trim())) {
+            setError("Email không hợp lệ, vui lòng nhập lại theo định dạng example@gmail.com");
             setErrorFields(['email']);
+            emailRef.current.focus();
             return;
         }
-        
-        // Mật khẩu: 8-20 ký tự, in hoa, thường, số, ký tự đặc biệt
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\,.;]).{8,20}$/; 
+
+        // --- 3. VALIDATE PASSWORD ---
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#%&*._-]).{8,20}$/;
+
         if (!passwordRegex.test(formData.password)) {
-            setError('Mật khẩu phải có 8-20 ký tự, bao gồm chữ in, chữ thường, số, ký tự đặc biệt. Vui lòng nhập lại');
+            setError("Mật khẩu phải dài 8-20 ký tự, gồm chữ in hoa, chữ thường, số và ký tự đặc biệt.");
             setErrorFields(['password']);
+            passwordRef.current.focus();
             return;
         }
 
+        // --- 4. CONFIRM PASSWORD ---
         if (formData.password !== formData.confirmPassword) {
-            setError('Mật khẩu và xác nhận mật khẩu không khớp, vui lòng nhập lại.');
+            setError("Mật khẩu và xác nhận mật khẩu không khớp.");
             setErrorFields(['password', 'confirmPassword']);
+            confirmPasswordRef.current.focus();
             return;
         }
-        
-        setIsLoading(true); // Bắt đầu loading
 
-        // --- BƯỚC 2: Gọi API Đăng ký ---
+        // --- 5. API CALL ---
+        setIsLoading(true);
+
         try {
-            const response = await axios.post(`${API_BASE_URL}/register`, {
+            const res = await axios.post(`${API_BASE_URL}/register`, {
                 username: formData.username,
                 email: formData.email,
                 password: formData.password
             });
-            
-            if (response.data.success) {
-                // Đăng ký thành công: CHUYỂN HƯỚNG VỀ TRANG ĐĂNG NHẬP
-                navigate('/login'); 
 
+            if (res.data.success) {
+                navigate('/login');
             } else {
-                // Lỗi từ server (Tên đăng nhập/Email đã tồn tại)
-                setError(response.data.message || 'Lỗi đăng ký không xác định.');
-                setErrorFields(['username', 'email']);
+                setError(res.data.message || "Đăng ký thất bại.");
             }
         } catch (err) {
-            console.error("Lỗi kết nối hoặc phản hồi API:", err.response ? err.response.data : err.message);
-            // Xử lý lỗi kết nối hoặc lỗi server
-            const errorMessage = err.response?.data?.message || 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra Backend.';
-            setError(errorMessage);
-        } finally {
-            setIsLoading(false); // Kết thúc loading
+            setError(err.response?.data?.message || "Lỗi kết nối đến server.");
         }
+
+        setIsLoading(false);
     };
 
-    const getInputBorderClass = (fieldName) => {
-        return errorFields.includes(fieldName) ? 'input-error-border' : '';
-    };
+    const getBorder = (field) => errorFields.includes(field) ? "input-error-border" : "";
 
     return (
         <div className="register-page">
-            {/* Cột Trái: Form Đăng Ký */}
+
             <div className="register-form-container">
                 <h1 className="logo-sms">
                     <span className="logo-icon">🛒</span> SMS
                 </h1>
+
                 <h2 className="auth-title">Đăng ký</h2>
 
                 <form onSubmit={handleSubmit} className="register-form">
-                    {error && <p className="error-message">{error}</p>}
 
+                    {/* ==== ERROR TEXT (NOT BOX) ==== */}
+                    {error && (
+                        <p className="error-message-simple">
+                            {error}
+                        </p>
+                    )}
+
+                    {/* USERNAME */}
                     <div className="input-group">
                         <input
                             type="text"
@@ -122,25 +135,27 @@ const RegisterPage = () => {
                             placeholder="Tên đăng nhập"
                             value={formData.username}
                             onChange={handleChange}
-                            className={`input-field ${getInputBorderClass('username')}`}
-                            disabled={isLoading}
+                            ref={usernameRef}
+                            className={`input-field ${getBorder("username")}`}
                         />
                         <span className="input-icon"><FiUser /></span>
                     </div>
 
+                    {/* EMAIL */}
                     <div className="input-group">
                         <input
-                            type="email"
+                            type="text"
                             name="email"
                             placeholder="Email"
                             value={formData.email}
                             onChange={handleChange}
-                            className={`input-field ${getInputBorderClass('email')}`}
-                            disabled={isLoading}
+                            ref={emailRef}
+                            className={`input-field ${getBorder("email")}`}
                         />
                         <span className="input-icon"><FiMail /></span>
                     </div>
 
+                    {/* PASSWORD */}
                     <div className="input-group">
                         <input
                             type="password"
@@ -148,12 +163,13 @@ const RegisterPage = () => {
                             placeholder="Mật khẩu"
                             value={formData.password}
                             onChange={handleChange}
-                            className={`input-field ${getInputBorderClass('password')}`}
-                            disabled={isLoading}
+                            ref={passwordRef}
+                            className={`input-field ${getBorder("password")}`}
                         />
                         <span className="input-icon"><FiLock /></span>
                     </div>
 
+                    {/* CONFIRM PASSWORD */}
                     <div className="input-group">
                         <input
                             type="password"
@@ -161,37 +177,34 @@ const RegisterPage = () => {
                             placeholder="Xác nhận mật khẩu"
                             value={formData.confirmPassword}
                             onChange={handleChange}
-                            className={`input-field ${getInputBorderClass('confirmPassword')}`}
-                            disabled={isLoading}
+                            ref={confirmPasswordRef}
+                            className={`input-field ${getBorder("confirmPassword")}`}
                         />
                         <span className="input-icon"><FiCheck /></span>
                     </div>
 
-                    {/* Nút Đăng ký */}
+                    {/* BUTTON */}
                     <button type="submit" className="btn-auth" disabled={isLoading}>
-                        {isLoading ? 'Đang xử lý...' : 'Đăng ký'}
+                        {isLoading ? "Đang xử lý..." : "Đăng ký"}
                     </button>
                 </form>
 
-                {/* Link Đăng nhập */}
                 <p className="auth-link-footer">
                     Đã có tài khoản? <a href="/login" className="link-text">Đăng nhập</a>
                 </p>
             </div>
 
-            {/* Cột Phải: Hình Minh Họa */}
             <div className="illustration-container">
-                <div className="illustration-content">
-                    <img 
-                        src="/images/undraw_inflation_ht0o 1.png" 
-                        alt="Người đàn ông đi bộ với giỏ hàng"
-                        className="illustration-image" 
-                    />
-                </div>
+                <img
+                    src="/images/undraw_inflation_ht0o 1.png"
+                    alt="Illustration"
+                    className="illustration-image"
+                />
                 <p className="illustration-caption">
                     Quản lý thông minh - Kinh doanh hiệu quả
                 </p>
             </div>
+
         </div>
     );
 };

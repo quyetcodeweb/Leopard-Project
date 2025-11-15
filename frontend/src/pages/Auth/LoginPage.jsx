@@ -39,62 +39,63 @@ const LoginPage = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
+
+    setError('');
+    setErrorFields([]);
+
+    // --- BƯỚC 1: Kiểm tra bỏ trống ---
+    const requiredFields = ['username', 'password'];
+    const missingFields = requiredFields.filter(field => !formData[field].trim());
+
+    if (missingFields.length > 0) {
+        const fieldNames = { username: 'Tên đăng nhập', password: 'Mật khẩu' };
+        const missingFieldNames = missingFields.map(field => fieldNames[field]).join(', ');
         
-        setError('');
-        setErrorFields([]);
-
-        // --- BƯỚC 1: Kiểm tra Bỏ trống ---
-        const requiredFields = ['username', 'password'];
-        const missingFields = requiredFields.filter(field => !formData[field].trim());
-
-        if (missingFields.length > 0) {
-            const fieldNames = { username: 'Tên đăng nhập', password: 'Mật khẩu' };
-            const missingFieldNames = missingFields.map(field => fieldNames[field]).join(', ');
-            
-            setError(`Vui lòng điền thông tin ở ${missingFieldNames}. Vui lòng kiểm tra lại!`);
-            setErrorFields(missingFields);
-            
-            if (missingFields[0] === 'username' && usernameRef.current) {
-                usernameRef.current.focus();
-            } else if (missingFields[0] === 'password' && passwordRef.current) {
-                passwordRef.current.focus();
-            }
-            return; 
+        setError(`Vui lòng điền thông tin ở ${missingFieldNames}. Vui lòng kiểm tra lại!`);
+        setErrorFields(missingFields);
+        
+        if (missingFields[0] === 'username' && usernameRef.current) {
+            usernameRef.current.focus();
+        } else if (missingFields[0] === 'password' && passwordRef.current) {
+            passwordRef.current.focus();
         }
-        
-        setIsLoading(true); // Bắt đầu loading
+        return;
+    }
 
-        // --- BƯỚC 2: Gọi API Đăng nhập ---
-        try {
-            const response = await axios.post(`${API_BASE_URL}/login`, formData);
+    setIsLoading(true);
 
-            if (response.data.success) {
-                // Đăng nhập thành công: Lưu token và user info
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('user', JSON.stringify(response.data.user));
-                
-                // ⭐ CHUYỂN HƯỚNG ĐẾN TRANG HOMEPAGE
-                navigate("/HomePage");
+    // --- BƯỚC 2: Gọi API ---
+    try {
+        const response = await axios.post(`${API_BASE_URL}/login`, formData);
 
+        if (response.data.success) {
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("user", JSON.stringify(response.data.user));
+
+            const role = response.data.user.role;
+
+            // ⭐ CHUYỂN HƯỚNG ĐÚNG
+            if (role === "admin") {
+                navigate("/admin/dashboard");
             } else {
-                // Lỗi từ server (Tên đăng nhập/Mật khẩu không đúng)
-                setError(response.data.message || 'Lỗi đăng nhập không xác định.');
-                setErrorFields(['username', 'password']);
-                if (usernameRef.current) {
-                    usernameRef.current.focus();
-                }
+                navigate("/homepage");
             }
-        } catch (err) {
-            console.error("Lỗi kết nối hoặc phản hồi API:", err.response ? err.response.data : err.message);
-            // Xử lý lỗi kết nối hoặc lỗi server
-            const errorMessage = err.response?.data?.message || 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra Backend.';
-            setError(errorMessage);
+
+        } else {
+            setError(response.data.message || 'Lỗi đăng nhập không xác định.');
             setErrorFields(['username', 'password']);
-        } finally {
-            setIsLoading(false); // Kết thúc loading
+            usernameRef.current?.focus();
         }
-    };
+    } catch (err) {
+        console.error("Lỗi API:", err.response?.data || err.message);
+        setError(err.response?.data?.message || "Không thể kết nối đến máy chủ.");
+        setErrorFields(["username", "password"]);
+    } finally {
+        setIsLoading(false);
+    }
+};
+
 
     const getInputBorderClass = (fieldName) => {
         return errorFields.includes(fieldName) ? 'input-error-border' : '';

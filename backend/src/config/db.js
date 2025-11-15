@@ -8,7 +8,7 @@ export const connectDB = async () => {
       host: 'localhost', 
       user: 'root', // ⭐ GÁN CỨNG: Bắt buộc phải là 'root'
       password: 'quocthang__2004', // ⭐ GÁN CỨNG: Bắt buộc phải là mật khẩu của bạn
-      database: 'leoparddb',
+      database: 'salesmanagementdb',
     });
 
     db = connection;

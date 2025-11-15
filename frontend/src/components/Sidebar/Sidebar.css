@@ -1,185 +1,170 @@
 .sidebar {
   width: 260px;
-  height: 100vh;
-  background: #fff;
-  border-right: 1px solid #e6e6e6;
-  padding: 18px;
+  background: #ffffff;
+  min-height: 100vh;
+  padding: 20px 20px 40px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
   position: fixed;
-  left: 0;
   top: 0;
-  overflow-y: auto;
-  box-sizing: border-box;
-  transition: background 0.3s, color 0.3s;
+  left: 0;
 }
 
-/* ==== LOGO ==== */
 .logo {
-  font-size: 20px;
-  font-weight: 700;
-  color: #0b63d6;
-  margin-bottom: 14px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #1976d2;
+  margin-bottom: 25px;
 }
 
-/* ==== USER BLOCK ==== */
+/* User info */
 .user-block {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 0 16px 0;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 14px;
+  gap: 12px;
+  margin-bottom: 25px;
 }
 
 .sidebar-avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  object-fit: cover;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  border: 2px solid #e5e7eb;
 }
 
 .user-name {
-  font-weight: 600;
   font-size: 15px;
+  font-weight: 600;
 }
 
 .user-role {
-  font-size: 12px;
-  color: #888;
-}
-
-/* ==== MENU ==== */
-.sidebar-section h4 {
   font-size: 13px;
   color: #888;
-  margin: 10px 0 8px;
 }
 
-.sidebar-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 18px 0;
-}
-
+/* Title */
 .sidebar-section li {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 10px;
+  padding: 10px 12px;
+  font-size: 15px;
+  color: #1f2937; /* text đen */
   cursor: pointer;
   border-radius: 8px;
-  transition: background 0.15s;
-  color: #333;
+  transition: 0.15s ease-in-out;
 }
 
-.sidebar-section li:hover,
+/* Icon mặc định màu đen */
+.sidebar-section li svg {
+  font-size: 18px;
+  color: #1f2937; /* icon đen */
+  transition: 0.15s;
+}
+
+/* Hover: icon + text chuyển màu xanh */
+.sidebar-section li:hover {
+  background: #eef4ff;
+  color: #2563eb;
+}
+
+.sidebar-section li:hover svg {
+  color: #2563eb;
+}
+
+/* Active */
 .sidebar-section li.active {
-  background-color: #f0f6ff;
-  color: #0b63d6;
+  background: #eaf1ff;
+  color: #2563eb;
+  font-weight: 600;
 }
 
-/* ==== DARK MODE TOGGLE ==== */
+.sidebar-section li.active svg {
+  color: #2563eb;
+}
+
+/* Dropdown */
+.dropdown-btn {
+  cursor: pointer;
+}
+
+.dropdown-list {
+  padding-left: 20px;
+  display: none;
+}
+
+.dropdown-list.show {
+  display: block;
+}
+
+.dropdown-list li {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
 .darkmode {
-  position: absolute;
-  bottom: 18px;
-  left: 18px;
-  right: 18px;
-  font-size: 13px;
-  color: #555;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-top: 25px;
+  padding: 15px 0;
+  border-top: 1px solid #e5e7eb;
 }
 
 .toggle-switch {
-  width: 40px;
-  height: 22px;
-  background-color: #ddd;
-  border-radius: 50px;
+  width: 50px;
+  height: 25px;
+  background: #ddd;
+  border-radius: 20px;
   position: relative;
   cursor: pointer;
-  transition: background 0.3s;
+  margin-top: 5px;
+}
+
+.toggle-switch.active {
+  background: #4caf50;
 }
 
 .switch-circle {
-  width: 18px;
-  height: 18px;
-  background: white;
+  width: 21px;
+  height: 21px;
+  background: #fff;
   border-radius: 50%;
   position: absolute;
   top: 2px;
   left: 2px;
-  transition: all 0.3s ease;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-}
-
-.toggle-switch.active {
-  background-color: #0b63d6;
+  transition: 0.2s;
 }
 
 .toggle-switch.active .switch-circle {
-  left: 20px;
+  left: 27px;
 }
 
-/* ==== DARK MODE ==== */
-.sidebar.dark {
-  background: #1f1f1f;
-  color: #eee;
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-.sidebar.dark .sidebar-section li {
-  color: #ccc;
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px 10px 0;
 }
 
-.sidebar.dark .sidebar-section li:hover,
-.sidebar.dark .sidebar-section li.active {
-  background-color: #333;
-  color: #fff;
-}
-
-.sidebar.dark .darkmode {
-  color: #ccc;
-}
-
-.sidebar.dark .toggle-switch {
-  background: #555;
-}
-
-.sidebar.dark .toggle-switch.active {
-  background: #2196f3;
-}
-/* === DROPDOWN === */
-.dropdown-list {
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  padding-left: 40px;
-  margin: 0; 
-  pointer-events: none; /* tránh click vào khi ẩn */
-}
-
-.dropdown-list.show {
-  max-height: 200px; /* đủ chứa 4 mục */
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.dropdown-list li {
-  list-style: none;
-  font-size: 14px;
-  padding: 6px 0;
-  color: #555;
+.logout-btn {
+  width: 100%;
+  padding: 11px 0;
+  background-color: #ef4444;
+  border: none;
+  color: white;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.3s;
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.dropdown-list li:hover {
-  background: #f4f4f4;
+.logout-btn:hover {
+  background-color: #dc2626;
 }

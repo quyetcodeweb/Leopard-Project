@@ -6,10 +6,11 @@ import "./Layout.css";
 const Layout = ({ children, title = "Dashboard" }) => {
   return (
     <div className="layout">
-      <Sidebar />
-      <Topbar title={title} />
-      <main className="main-content">{children}</main>
+  <Sidebar />
+    <div className="layout-content">
+      {children}
     </div>
+</div>
   );
 };
 
