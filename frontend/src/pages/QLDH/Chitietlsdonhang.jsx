@@ -16,10 +16,8 @@ const Chitietlsdonhang = ({ orderID, onClose }) => {
         const res = await axios.get(`http://localhost:5000/api/donhang/${orderID}`);
         const data = res.data;
 
-        // Chỉ hiển thị 2 trạng thái: "Đã giao" hoặc "Đã hủy"
-        const trangThaiHienThi = data.Status === "Đã hủy" ? "Đã hủy" : "Đã giao";
-
-        setDonHang({ ...data, trangThai: trangThaiHienThi });
+        // Hiển thị đúng trạng thái từ server
+        setDonHang(data);
         setLoading(false);
       } catch (err) {
         console.error(err);

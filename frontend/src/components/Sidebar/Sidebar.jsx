@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 import "./Sidebar.css";
 import {
   FaUsers,
@@ -62,9 +62,7 @@ const Sidebar = () => {
           </li>
 
           {/* === ĐƠN HÀNG === */}
-          <li
-            className="dropdown-btn"
-            onClick={() => {
+          <li className="dropdown-btn" onClick={() => {
               setOpenOrder(!openOrder);  // toggle dropdown
               navigate("/donhang");       // điều hướng sang trang đơn hàng
             }}
