@@ -56,8 +56,8 @@ const Taodonhang = ({ onClose, onCreated }) => {
         setKhachHang({ ...khachHang, [name]: value });
       }
     } else if (name === "ten" || name === "diachi") {
-      // Chỉ nhận chữ, số và khoảng trắng
-      const regex = /^[a-zA-Z0-9\s]*$/;
+      // Chặn ký tự đặc biệt: chỉ bỏ @,#,$,%,&,*,...
+      const regex = /^[^@#$%^&*]+$/;
       if (regex.test(value)) {
         setKhachHang({ ...khachHang, [name]: value });
         setErrors({ ...errors, [name]: "" });
@@ -68,6 +68,7 @@ const Taodonhang = ({ onClose, onCreated }) => {
       setKhachHang({ ...khachHang, [name]: value });
     }
   };
+
 
   // 3️ Tìm kiếm sản phẩm
   const handleTimKiem = () => {
