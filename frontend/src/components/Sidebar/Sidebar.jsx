@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 import {
   FaUsers,
@@ -12,29 +12,18 @@ import {
   FaHistory,
 } from "react-icons/fa";
 
-const Sidebar = () => {
-  const [darkMode, setDarkMode] = useState(false);
+const Sidebar = ({ darkMode, toggleDarkMode }) => {
   const [openOrder, setOpenOrder] = useState(false);
-  const navigate = useNavigate();
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
 
   const toggleOrderMenu = () => {
     setOpenOrder(!openOrder);
-  };
-
-  //điều hướng đơn hàng
-  const goToOrderStatus = (status) => {
-    navigate(`/donhang?status=${status}`);
   };
 
   return (
     <aside className={`sidebar ${darkMode ? "dark" : ""}`}>
       <div className="logo">🛒 SMS</div>
 
-      {/* ==== USER INFO ==== */}
+      {/* USER INFO */}
       <div className="user-block">
         <img
           src="https://via.placeholder.com/60"
@@ -47,74 +36,90 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* ==== MENU CHUNG ==== */}
+      {/* MENU */}
       <div className="sidebar-section">
         <h4>Chung</h4>
         <ul>
           <li>
-            <FaChartBar /> <span>Tổng quan</span>
+            <NavLink to="/" end>
+              <FaChartBar /> <span>Tổng quan</span>
+            </NavLink>
           </li>
           <li>
-            <FaUsers /> <span>Khách hàng</span>
+            <NavLink to="/customers">
+              <FaUsers /> <span>Khách hàng</span>
+            </NavLink>
           </li>
           <li>
-            <FaTags /> <span>Mã giảm giá</span>
+            <NavLink to="/coupons">
+              <FaTags /> <span>Mã giảm giá</span>
+            </NavLink>
           </li>
-
-          {/* === ĐƠN HÀNG === */}
-          <li className="dropdown-btn" onClick={() => {
-              setOpenOrder(!openOrder);  // toggle dropdown
-              navigate("/donhang");       // điều hướng sang trang đơn hàng
-            }}
-          >
-            <FaClipboardList /> <span>Đơn hàng</span>
+          <li>
+            <a 
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                toggleOrderMenu();
+              }}
+            >
+              <FaClipboardList /> <span>Đơn hàng</span>
+            </a>
           </li>
           <div className={`dropdown-list ${openOrder ? "show" : ""}`}>
-            <li style={{ cursor: "pointer" }} onClick={() => goToOrderStatus("daxuly")}>
-              Đã tiếp nhận
+            <li>
+              <NavLink to="/orders/received">Đã tiếp nhận</NavLink>
             </li>
-            <li style={{ cursor: "pointer" }} onClick={() => goToOrderStatus("dangxuly")}>
-              Đang xử lý
+            <li>
+              <NavLink to="/orders/processing">Đang xử lý</NavLink>
             </li>
-            <li style={{ cursor: "pointer" }} onClick={() => goToOrderStatus("danggiao")}>
-              Đã giao
+            <li>
+              <NavLink to="/orders/delivered">Đã giao</NavLink>
             </li>
-            <li style={{ cursor: "pointer" }} onClick={() => goToOrderStatus("dahuy")}>
-              Đã hủy
+            <li>
+              <NavLink to="/orders/cancelled">Đã hủy</NavLink>
             </li>
           </div>
-          <li className="active">
-            <FaBox /> <span>Sản phẩm</span>
+          <li>
+            <NavLink to="/products">
+              <FaBox /> <span>Sản phẩm</span>
+            </NavLink>
           </li>
           <li>
-            <FaWarehouse /> <span>Kho hàng</span>
+            <NavLink to="/warehouse">
+              <FaWarehouse /> <span>Kho hàng</span>
+            </NavLink>
           </li>
           <li>
-            <FaChartBar /> <span>Thống kê</span>
+            <NavLink to="/stats">
+              <FaChartBar /> <span>Thống kê</span>
+            </NavLink>
           </li>
         </ul>
       </div>
 
-      {/* ==== MENU ADMIN ==== */}
       <div className="sidebar-section">
         <h4>Admin</h4>
         <ul>
           <li>
-            <FaUserCog /> <span>Người dùng</span>
+            <NavLink to="/user">
+              <FaUserCog /> <span>Người dùng</span>
+            </NavLink>
           </li>
           <li>
-            <FaHistory /> <span>Lịch sử thao tác</span>
+            <NavLink to="/HistoryControl">
+              <FaHistory /> <span>Lịch sử thao tác</span>
+            </NavLink>
           </li>
-          <li
-            onClick={() => navigate("/lichsudonhang")}
-            style={{ cursor: "pointer" }}
-          >
-            <FaHistory /> <span>Lịch sử đơn hàng</span>
+          <li>
+            <NavLink to="/HistoryOrder">
+              <FaHistory /> <span>Lịch sử đơn hàng</span>
+            </NavLink>
           </li>
         </ul>
       </div>
 
-      {/* ==== DARK MODE TOGGLE ==== */}
+      {/* DARK MODE */}
       <div className="darkmode">
         <label>Chế độ tối</label>
         <div

@@ -1,12 +1,49 @@
+:root {
+  --sidebar-width: 260px;
+  --topbar-height: 60px;
+  --gutter: 24px;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
 .layout {
   display: flex;
+  min-height: 100vh; 
+  color: var(--fg, #222);
 }
 
 .main-content {
-  margin-left: 220px; /* bằng width sidebar */
-  margin-top: 60px;   /* bằng height topbar */
-  padding: 20px;
-  background: #FFFFFF;
-  min-height: calc(100vh - 60px);
+  margin-left: var(--sidebar-width);
+  margin-top: var(--topbar-height);
+  padding: var(--gutter);
   box-sizing: border-box;
+  width: calc(100% - var(--sidebar-width));
+  min-height: calc(100vh - var(--topbar-height));
+  transition: background 0.3s, color 0.3s;
 }
+
+.layout.dark {
+  --bg: #0f0f0f;
+  --fg: #eee;
+}
+
+.layout.dark .main-content {
+  background: #121212;
+  color: #eee;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: 0px; 
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px;
+  }
+}
+
