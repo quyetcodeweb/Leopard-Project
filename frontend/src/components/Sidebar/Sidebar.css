@@ -67,20 +67,50 @@
 }
 
 .sidebar-section li {
+  margin-bottom: 4px;
+}
+
+/* TOÀN BỘ LI CLICK ĐƯỢC */
+.sidebar-section li a,
+.dropdown-list li a {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 10px;
-  cursor: pointer;
+  padding: 10px 16px;
   border-radius: 8px;
-  transition: background 0.15s;
   color: #333;
+  text-decoration: none;
+  transition: all 0.25s ease;
 }
 
-.sidebar-section li:hover,
-.sidebar-section li.active {
-  background-color: #f0f6ff;
+.sidebar-section li a:hover,
+.dropdown-list li a:hover {
+  background-color: #e6f0ff;
   color: #0b63d6;
+  transform: translateX(2px);
+}
+
+.sidebar-section li a.active,
+.dropdown-list li a.active {
+  background-color: #0b63d6;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* ==== DROPDOWN ==== */
+.dropdown-list {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  padding-left: 20px;
+  pointer-events: none;
+}
+
+.dropdown-list.show {
+  max-height: 200px;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* ==== DARK MODE TOGGLE ==== */
@@ -132,54 +162,23 @@
   color: #eee;
 }
 
-.sidebar.dark .sidebar-section li {
+.sidebar.dark .sidebar-section li a,
+.sidebar.dark .dropdown-list li a {
   color: #ccc;
 }
 
-.sidebar.dark .sidebar-section li:hover,
-.sidebar.dark .sidebar-section li.active {
+.sidebar.dark .sidebar-section li a:hover,
+.sidebar.dark .dropdown-list li a:hover {
   background-color: #333;
   color: #fff;
 }
 
-.sidebar.dark .darkmode {
-  color: #ccc;
+.sidebar.dark .sidebar-section li a.active,
+.sidebar.dark .dropdown-list li a.active {
+  background-color: #2196f3;
+  color: white;
 }
 
-.sidebar.dark .toggle-switch {
-  background: #555;
-}
-
-.sidebar.dark .toggle-switch.active {
-  background: #2196f3;
-}
-/* === DROPDOWN === */
-.dropdown-list {
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  padding-left: 40px;
-  margin: 0; 
-  pointer-events: none; /* tránh click vào khi ẩn */
-}
-
-.dropdown-list.show {
-  max-height: 200px; /* đủ chứa 4 mục */
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.dropdown-list li {
-  list-style: none;
-  font-size: 14px;
-  padding: 6px 0;
-  color: #555;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.3s;
-}
-
-.dropdown-list li:hover {
-  background: #f4f4f4;
+.sidebar.dark .dropdown-list li a:hover {
+  background-color: #444;
 }

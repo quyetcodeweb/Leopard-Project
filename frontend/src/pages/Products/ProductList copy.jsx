@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./ProductList.css";
 import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 // Popup component
 import AddProductPopup from "../../components/Popups/AddProductPopup";
@@ -255,7 +254,6 @@ const ProductList = () => {
           onSave={async (newProduct) => {
             try {
               await axios.post(API_URL, newProduct);
-              alert("Thêm sản phẩm thành công!");
               setShowAddModal(false);
               fetchProducts();
             } catch (err) {
@@ -275,7 +273,6 @@ const ProductList = () => {
                 `${API_URL}/${editProduct.ProductID}`,
                 updatedProduct
               );
-              alert("Sửa sản phẩm thành công!");
               setShowEditModal(false);
               setEditProduct(null);
               fetchProducts();
@@ -293,7 +290,6 @@ const ProductList = () => {
           onDelete={async () => {
             try {
               await axios.delete(`${API_URL}/${deleteProduct.ProductID}`);
-              alert("Xóa sản phẩm thành công!");
               setShowDeleteModal(false);
               setDeleteProduct(null);
               fetchProducts();

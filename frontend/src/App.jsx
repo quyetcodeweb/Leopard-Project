@@ -1,19 +1,17 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import ProductPage from "./pages/Products/ProductPage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout/Layout";
+import AllRouters from "./routers/AllRouters";
 
-const App = () => {
+function App() {
   return (
     <Router>
       <Routes>
-        {/* Route mặc định */}
-        <Route path="/" element={<Navigate to="/products" />} />
-
-        {/* Trang sản phẩm */}
-        <Route path="/products" element={<ProductPage />} />
+        <Route path="/" element={<Layout />}>
+          {AllRouters}  {/* ✅ Vẫn dùng AllRouters */}
+        </Route>
       </Routes>
     </Router>
   );
-};
+}
 
 export default App;
