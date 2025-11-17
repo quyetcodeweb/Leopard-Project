@@ -6,7 +6,7 @@
   margin-left: 220px; /* bằng width sidebar */
   margin-top: 60px;   /* bằng height topbar */
   padding: 20px;
-  background: #f7f8fa;
+  background: #FFFFFF;
   min-height: calc(100vh - 60px);
   box-sizing: border-box;
 }

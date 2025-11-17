@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import "./Sidebar.css";
 import {
   FaUsers,
@@ -14,6 +15,7 @@ import {
 const Sidebar = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [openOrder, setOpenOrder] = useState(false);
+  const navigate = useNavigate();
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -21,6 +23,11 @@ const Sidebar = () => {
 
   const toggleOrderMenu = () => {
     setOpenOrder(!openOrder);
+  };
+
+  //điều hướng đơn hàng
+  const goToOrderStatus = (status) => {
+    navigate(`/donhang?status=${status}`);
   };
 
   return (
@@ -55,16 +62,27 @@ const Sidebar = () => {
           </li>
 
           {/* === ĐƠN HÀNG === */}
-        <li onClick={toggleOrderMenu} className="dropdown-btn">
-        <FaClipboardList /> <span>Đơn hàng</span>
-        </li>
-        <div className={`dropdown-list ${openOrder ? "show" : ""}`}>
-        <li>Đã tiếp nhận</li>
-        <li>Đang xử lý</li>
-        <li>Đã giao</li>
-        <li>Đã hủy</li>
-        </div>
-
+          <li className="dropdown-btn" onClick={() => {
+              setOpenOrder(!openOrder);  // toggle dropdown
+              navigate("/donhang");       // điều hướng sang trang đơn hàng
+            }}
+          >
+            <FaClipboardList /> <span>Đơn hàng</span>
+          </li>
+          <div className={`dropdown-list ${openOrder ? "show" : ""}`}>
+            <li style={{ cursor: "pointer" }} onClick={() => goToOrderStatus("daxuly")}>
+              Đã tiếp nhận
+            </li>
+            <li style={{ cursor: "pointer" }} onClick={() => goToOrderStatus("dangxuly")}>
+              Đang xử lý
+            </li>
+            <li style={{ cursor: "pointer" }} onClick={() => goToOrderStatus("danggiao")}>
+              Đã giao
+            </li>
+            <li style={{ cursor: "pointer" }} onClick={() => goToOrderStatus("dahuy")}>
+              Đã hủy
+            </li>
+          </div>
           <li className="active">
             <FaBox /> <span>Sản phẩm</span>
           </li>
@@ -87,7 +105,10 @@ const Sidebar = () => {
           <li>
             <FaHistory /> <span>Lịch sử thao tác</span>
           </li>
-          <li>
+          <li
+            onClick={() => navigate("/lichsudonhang")}
+            style={{ cursor: "pointer" }}
+          >
             <FaHistory /> <span>Lịch sử đơn hàng</span>
           </li>
         </ul>
