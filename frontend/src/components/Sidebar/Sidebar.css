@@ -150,11 +150,11 @@
 
 .logout-btn {
   width: 100%;
-  padding: 11px 0;
-  background-color: #ef4444;
-  border: none;
-  color: white;
-  border-radius: 8px;
+  padding: 10px 0;
+  background: #ffffff;
+  border: 1.8px solid #d1d5db;   /* Viền xám nhạt */
+  color: #374151;               /* Text xám đậm */
+  border-radius: 50px;          /* Bo tròn pill */
   cursor: pointer;
   font-weight: 600;
   font-size: 15px;
@@ -166,5 +166,12 @@
 }
 
 .logout-btn:hover {
-  background-color: #dc2626;
+  background: #f3f4f6;          /* Hover sáng */
+  border-color: #9ca3af;
+}
+
+.logout-icon {
+  font-size: 16px;      /* nhỏ hơn */
+  color: #111;          /* đen thuần */
+  stroke-width: 2;      /* nét đậm */
 }

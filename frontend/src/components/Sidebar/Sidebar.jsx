@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Sidebar.css";
-
+import { FiLogOut } from "react-icons/fi";
 import {
   FaUsers,
   FaTags,
@@ -120,11 +120,10 @@ const Sidebar = () => {
       </div>
 
       {/* LOGOUT BUTTON - NEW DESIGN */}
-      <div className="sidebar-footer">
-        <button className="logout-btn" onClick={handleLogout}>
-          <span className="logout-icon">🚪</span> Đăng xuất
-        </button>
-      </div>
+      <button className="logout-btn" onClick={handleLogout}>
+        <FiLogOut className="logout-icon" />
+        Đăng xuất
+      </button>
     </aside>
   );
 };
