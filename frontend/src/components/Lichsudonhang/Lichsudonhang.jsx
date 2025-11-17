@@ -20,7 +20,7 @@ const Lichsudonhang = () => {
       const res = await axios.get("http://localhost:5000/api/donhang");
       // Lọc chỉ những đơn 'Đã giao' hoặc 'Đã hủy'
       const filtered = res.data.filter(
-        (don) => don.Status === "Đã giao" || don.Status === "Đã hủy"
+        (don) => don.Status === "Hoàn thành" || don.Status === "Đã hủy"
       );
       setDonHangList(filtered);
       setCurrentPage(1);
@@ -39,7 +39,7 @@ const Lichsudonhang = () => {
       });
 
       const filtered = res.data.filter(
-        (don) => don.Status === "Đã giao" || don.Status === "Đã hủy"
+        (don) => don.Status === "Hoàn thành" || don.Status === "Đã hủy"
       );
       setDonHangList(filtered);
       setCurrentPage(1);

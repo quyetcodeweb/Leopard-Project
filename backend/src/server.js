@@ -4,14 +4,23 @@ import dotenv from "dotenv";
 import "./config/db.js"; 
 import productRoutes from "./routers/productRoutes.js";
 import categoryRoutes from "./routers/categoryRoutes.js";
+import donhangRoutes from "./routes/donhang.js";
+import deliverRoutes from "./routes/deliver.js";
+import ordersRoutes from "./routes/orders.js";
+import sanphamRoutes from "./routes/sanpham.js";
 dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: "10mb" })); // thêm limit để tránh lỗi ảnh base64
+app.use(express.json({ limit: "10mb" })); 
 
 app.use("/api/products", productRoutes);
 app.use("/api/category", categoryRoutes);
+app.use("/api/donhang", donhangRoutes);
+app.use("/api/deliver", deliverRoutes);
+app.use("/api/orders", ordersRoutes);
+app.use("/api/sanpham", sanphamRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("🚀 LeopardProject API đang hoạt động!");

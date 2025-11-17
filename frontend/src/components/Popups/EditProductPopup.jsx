@@ -137,7 +137,7 @@ const EditProductPopup = ({ product, onClose, onSave }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="modal">
+      <div className="modalpopup">
         <h3>Chỉnh sửa sản phẩm</h3>
         <FaTimes className="close" onClick={onClose} />
 
