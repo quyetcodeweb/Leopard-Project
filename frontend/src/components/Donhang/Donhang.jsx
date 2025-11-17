@@ -125,6 +125,7 @@ const Donhang = () => {
           <input
             type="date"
             value={searchNgay}
+            onKeyDown={(e) => e.preventDefault()}
             onChange={(e) => setSearchNgay(e.target.value)}
           />
           <button className="search-btn" onClick={handleSearch}>Tìm kiếm</button>
@@ -216,3 +217,4 @@ const Donhang = () => {
 };
 
 export default Donhang;
+
