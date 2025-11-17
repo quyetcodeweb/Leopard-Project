@@ -8,11 +8,11 @@ import "./Donhang.css";
 const STATUS_LABELS = {
   daxuly: "Đã tiếp nhận",
   dangxuly: "Đang xử lý",
-  danggiao: "Đã giao",
+  danggiao: "Hoàn thành",
   dahuy: "Đã hủy"
 };
 
-const Donhang = () => {
+const Donhang = ({status}) => {
   const [donHangList, setDonHangList] = useState([]);
   const [searchMa, setSearchMa] = useState("");
   const [searchNgay, setSearchNgay] = useState("");
@@ -20,30 +20,24 @@ const Donhang = () => {
   const [selectedOrderID, setSelectedOrderID] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
-
-  const location = useLocation(); 
-  const queryParams = new URLSearchParams(location.search);
-  const statusFilter = queryParams.get("status"); // 'daxuly', 'dangxuly', 'danggiao', 'dahuy'
-
+  
   useEffect(() => {
     fetchData();
-  }, [statusFilter]);
+  }, [status]);
 
   const fetchData = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/donhang");
       let data = res.data;
-
-      // Lọc theo status nếu có
-      if (statusFilter) {
-        data = data.filter(dh => dh.Status === STATUS_LABELS[statusFilter]);
+      if (status) {
+        data = data.filter(dh => dh.Status === STATUS_LABELS[status]);
+        console.log(`Data after filtering status=${status}:`, data);
       }
 
       setDonHangList(data);
       setCurrentPage(1);
     } catch (err) {
       console.error(err);
-      alert("Lấy danh sách đơn hàng thất bại");
     }
   };
 
@@ -59,7 +53,6 @@ const Donhang = () => {
       setCurrentPage(1);
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert("Tìm kiếm thất bại: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -70,7 +63,6 @@ const Donhang = () => {
       fetchData();
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert("Xác nhận thất bại: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -81,7 +73,6 @@ const Donhang = () => {
       fetchData();
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert("Cập nhật thất bại: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -92,7 +83,6 @@ const Donhang = () => {
       fetchData();
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert("Hủy đơn hàng thất bại: " + (err.response?.data?.message || err.message));
     }
   };
 

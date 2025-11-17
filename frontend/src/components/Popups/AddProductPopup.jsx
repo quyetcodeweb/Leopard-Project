@@ -124,7 +124,7 @@ const AddProductPopup = ({ onClose, onSave }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="modal">
+      <div className="modalpopup">
         <h3>Thêm sản phẩm</h3>
         <FaTimes className="close" onClick={onClose} />
 

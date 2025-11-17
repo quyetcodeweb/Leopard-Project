@@ -159,30 +159,29 @@
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: fadeIn 0.25s ease;
   z-index: 1000;
 }
 
 /* === MODAL === */
-.modal {
+.modalpopup {
   background: #fff;
   border-radius: 16px;
-  width: 800px;
+  width: 600px;
   max-width: 90%;
   padding: 25px 30px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
-  animation: slideIn 0.3s ease;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.25);
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  z-index: 1001;
 }
 /* === HEADER === */
-.modal h3 {
+.modalpopup h3 {
   text-align: center;
   font-size: 30px;
   font-weight: 600;
@@ -205,9 +204,9 @@
 }
 
 /* === FORM INPUTS === */
-.modal input,
-.modal textarea,
-.modal select {
+.modalpopup input,
+.modalpopup textarea,
+.modalpopup select {
   width: 100%;
   border: 1px solid #dcdcdc;
   border-radius: 10px;
@@ -216,41 +215,41 @@
   transition: 0.2s;
   
 }
-.modal input{
+.modalpopup input{
   margin-right: 50px;
 }
-.modal label {
+.modalpopup label {
   font-size: 14px;
   font-weight: 500;
   color: #333;
   margin-top: 6px;
 }
 
-.modal textarea {
+.modalpopup textarea {
   resize: none;
   height: 80px;
 }
 
-.modal input:focus,
-.modal textarea:focus,
-.modal select:focus {
+.modalpopup input:focus,
+.modalpopup textarea:focus,
+.modalpopup select:focus {
   border-color: #0b63d6;
   box-shadow: 0 0 0 3px rgba(11, 99, 214, 0.15);
   outline: none;
 }
 /* === FORM LAYOUT (2 CỘT) === */
-.modal form {
+.modalpopup form {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px 50px;
 }
 
-.modal form .full-width {
+.modalpopup form .full-width {
   grid-column: span 2;
 }
 
 /* Canh giữa nút Lưu */
-.modal .btn-save {
+.modalpopup .btn-save {
   grid-column: span 2;
   margin-top: 8px;
 }
@@ -271,7 +270,7 @@
 }
 
 /* === LOW STOCK WARNING === */
-.modal p {
+.modalpopup p {
   font-size: 20px;
   color: #f0ad4e;
   text-align: center;
@@ -308,7 +307,7 @@
 
 /* === MOBILE === */
 @media (max-width: 480px) {
-  .modal {
+  .modalpopup {
     width: 90%;
     padding: 20px;
   }
@@ -527,11 +526,11 @@
   color: #ddd;
   border-color: #3a3a3a;
 }
-.dark .modal {
+.dark .modalpopup {
   background: #2a2a2a;
   color: #eee;
 }
-.dark .modal h3 {
+.dark .modalpopup h3 {
   color: #4da3ff;
 }
 .dark .page-btn {

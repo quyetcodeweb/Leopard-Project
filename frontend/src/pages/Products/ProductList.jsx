@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./ProductList.css";
 import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 // Popup component
 import AddProductPopup from "../../components/Popups/AddProductPopup";
@@ -37,6 +36,7 @@ const ProductList = () => {
         IsActive: typeof p.IsActive === "object" ? p.IsActive[0] : p.IsActive,
       }));
       setProducts(processed);
+      console.log("✅ Sản phẩm đã được tải:", processed);
     } catch (err) {
       console.error("Lỗi tải sản phẩm:", err);
     }
@@ -47,6 +47,7 @@ const ProductList = () => {
     try {
       const res = await axios.get(CATEGORY_URL);
       setCategories(res.data);
+      console.log("✅ Danh mục đã được tải:", res.data);
     } catch (err) {
       console.error("Lỗi tải danh mục:", err);
     }
@@ -68,6 +69,7 @@ const ProductList = () => {
             : p
         )
       );
+      console.log("✅ Trạng thái đã cập nhật:", res.data);
     } catch (err) {
       console.error("Lỗi cập nhật trạng thái:", err);
     }
@@ -75,12 +77,14 @@ const ProductList = () => {
 
   // Mở popup sửa
   const openEditModal = (product) => {
+    console.log("✏️ Mở popup sửa:", product);
     setEditProduct(product);
     setShowEditModal(true);
   };
 
   // Mở popup xóa
   const openDeleteModal = (product) => {
+    console.log("🗑️ Mở popup xóa:", product);
     setDeleteProduct(product);
     setShowDeleteModal(true);
   };
@@ -162,7 +166,7 @@ const ProductList = () => {
           </select>
         </div>
         <div className="product-addbtn">
-          <button className="btn-add" onClick={() => setShowAddModal(true)}>
+          <button className="btn-add" onClick={() => {console.log("➕ Mở popup thêm sản phẩm");setShowAddModal(true)}}>
             <FaPlus /> Thêm
           </button>
         </div>

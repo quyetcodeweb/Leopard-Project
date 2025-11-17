@@ -6,14 +6,10 @@ import "./Layout.css";
 
 const Layout = () => {
   const [darkMode, setDarkMode] = useState(false);
-
-  const toggleDarkMode = () => setDarkMode(prev => !prev);
-
   return (
     <div className={`layout ${darkMode ? "dark" : ""}`}>
-      <Sidebar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+      <Sidebar darkMode={darkMode} toggleDarkMode={() => setDarkMode(prev => !prev)} />
       <Topbar darkMode={darkMode} />
-
       <main className="main-content">
         <Outlet />
       </main>
