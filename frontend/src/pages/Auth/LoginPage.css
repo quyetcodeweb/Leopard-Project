@@ -1,0 +1,10 @@
+@import url('./AuthCommon.css');
+
+/* Căn chỉnh Link Quên Mật Khẩu (Bên trái, phía trên nút Đăng nhập) */
+.forgot-password-link {
+    width: 100%;
+    max-width: 350px; /* Phải khớp với max-width của form */
+    text-align: right; /* Căn chỉnh sang PHẢI như trong thiết kế Figma */
+    margin-bottom: 5px; 
+    font-size: 0.9rem;
+}
