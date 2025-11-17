@@ -1,12 +1,13 @@
 import { getDb } from "../config/db.js";
 
-// GIẢ LẬP BCRYPT (VÌ MÔI TRƯỜNG NÀY KHÔNG CÀI)
+// === BCRYPT GIẢ ===
+// Lưu mật khẩu dạng thô
 const bcrypt = { 
     hash: async (password, salt) => password, 
-    compare: async (password, hash) => password === hash
+    compare: async (password, hash) => password === hash 
 };
 
-// GIẢ LẬP JWT
+// === JWT GIẢ ===
 const jwt = { 
     sign: (payload, secret, options) => "mock-jwt-token-12345"
 };
@@ -14,85 +15,81 @@ const jwt = {
 const JWT_SECRET = process.env.JWT_SECRET || "DEFAULT_SECRET";
 
 
-// --- XỬ LÝ ĐĂNG KÝ ---
+// ===============================
+// 📌 API ĐĂNG KÝ
+// ===============================
 export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
-  // CHỈ CHO PHÉP EMAIL DẠNG example@gmail.com
   const strictEmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
   if (!strictEmailRegex.test(email.trim())) {
     return res.status(400).json({
       success: false,
-      message:
-        "Email không hợp lệ, vui lòng nhập lại theo định dạng example@gmail.com",
+      message: "Email không hợp lệ, vui lòng nhập example@gmail.com",
     });
   }
 
   if (!username || !email || !password) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Vui lòng điền đầy đủ thông tin." });
+    return res.status(400).json({
+      success: false, 
+      message: "Vui lòng điền đầy đủ thông tin."
+    });
   }
 
   try {
     const db = getDb();
-    if (!db)
-      return res
-        .status(500)
-        .json({ success: false, message: "Lỗi kết nối CSDL." });
 
-    // 1. Kiểm tra email hoặc username tồn tại
-    const [existingUsers] = await db.execute(
+    const [existing] = await db.execute(
       "SELECT user_id FROM users WHERE username = ? OR email = ?",
       [username, email]
     );
 
-    if (existingUsers.length > 0) {
+    if (existing.length > 0) {
       return res.status(409).json({
         success: false,
-        message: "Tên đăng nhập hoặc email đã được sử dụng.",
+        message: "Tên đăng nhập hoặc email đã tồn tại."
       });
     }
 
-    // 2. Hash mật khẩu
-    const passwordHash = await bcrypt.hash(password, 10);
+    // ⭐ KHÔNG HASH → LƯU MẬT KHẨU THÔ
+    const passwordHash = password;
 
-    // 3. Lưu vào DB
     await db.execute(
-      "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
-      [username, email, passwordHash]
+      "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)",
+      [username, email, passwordHash, "customer"]
     );
 
     return res.status(201).json({
       success: true,
-      message: "Đăng ký thành công! Vui lòng đăng nhập.",
+      message: "Đăng ký thành công! Vui lòng đăng nhập."
     });
+
   } catch (error) {
     console.error("Lỗi đăng ký:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Lỗi máy chủ khi đăng ký." });
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi máy chủ."
+    });
   }
 };
 
 
-// --- XỬ LÝ ĐĂNG NHẬP ---
+// ===============================
+// 📌 API ĐĂNG NHẬP
+// ===============================
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Vui lòng nhập đầy đủ thông tin." });
+    return res.status(400).json({
+      success: false,
+      message: "Vui lòng nhập đầy đủ thông tin."
+    });
   }
 
   try {
     const db = getDb();
-    if (!db)
-      return res
-        .status(500)
-        .json({ success: false, message: "Lỗi kết nối CSDL." });
 
     const [users] = await db.execute(
       "SELECT user_id, username, password_hash, role FROM users WHERE username = ?",
@@ -100,23 +97,24 @@ export const loginUser = async (req, res) => {
     );
 
     const user = users[0];
+
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Tên đăng nhập hoặc mật khẩu không đúng.",
+        message: "Tên đăng nhập hoặc mật khẩu không đúng."
       });
     }
 
-    // So sánh mật khẩu
+    // ⭐ bcrypt.compare GIẢ → so sánh trực tiếp
     const isMatch = await bcrypt.compare(password, user.password_hash);
+
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Tên đăng nhập hoặc mật khẩu không đúng.",
+        message: "Tên đăng nhập hoặc mật khẩu không đúng."
       });
     }
 
-    // Tạo token
     const token = jwt.sign(
       { userId: user.user_id, role: user.role },
       JWT_SECRET,
@@ -132,10 +130,12 @@ export const loginUser = async (req, res) => {
         role: user.role,
       },
     });
+
   } catch (error) {
     console.error("Lỗi đăng nhập:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Lỗi máy chủ khi đăng nhập." });
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi máy chủ."
+    });
   }
 };

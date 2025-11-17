@@ -18,15 +18,34 @@ export const requireAuth = (req, res, next) => {
   }
 };
 
-// Kiểm tra role
+// ----------------------------------------------
+// ⭐ Cho phép Admin + Manager + Staff vào Dashboard
+// ----------------------------------------------
+export const allowDashboardAccess = () => {
+  return (req, res, next) => {
+    const allowed = ["admin", "manager", "staff"];
+
+    if (!allowed.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Bạn không có quyền truy cập Dashboard"
+      });
+    }
+    next();
+  };
+};
+
+// ----------------------------------------------
+// ⭐ Check role cho API riêng (Admin-only, Manager-only …)
+// ----------------------------------------------
 export const authorizeRoles = (...allowedRoles) => {
-    return (req, res, next) => {
-        if (!allowedRoles.includes(req.user.role)) {
-            return res.status(403).json({ 
-                success: false, 
-                message: "Không có quyền truy cập" 
-            });
-        }
-        next();
-    };
+  return (req, res, next) => {
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Không có quyền truy cập"
+      });
+    }
+    next();
+  };
 };

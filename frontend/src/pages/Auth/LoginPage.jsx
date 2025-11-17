@@ -7,6 +7,7 @@ import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { BsCart2 } from "react-icons/bs"; // icon logo giỏ hàng
 
 
+
 // ⭐ Cấu hình API Backend (Đảm bảo Node/Express server đang chạy ở đây)
 const API_BASE_URL = 'http://localhost:5000/api/auth'; 
 
@@ -75,11 +76,11 @@ const LoginPage = () => {
 
             const role = response.data.user.role;
 
-            // ⭐ CHUYỂN HƯỚNG ĐÚNG
-            if (role === "admin") {
-                navigate("/admin/dashboard");
+            // ⭐ CHUYỂN HƯỚNG ĐÚNG THEO PHÂN QUYỀN
+            if (["admin", "manager", "staff"].includes(role)) {
+                navigate("/admin/dashboard"); // trang backoffice
             } else {
-                navigate("/homepage");
+                navigate("/homepage"); // trang khách hàng
             }
 
         } else {

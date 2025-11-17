@@ -1,33 +1,29 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../../components/Layout/Layout";
 import "./UserManager.css";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
+
+/* 🌟 Mapping Role: English → Vietnamese */
+const ROLE_MAP = {
+  admin: "Quản trị viên",
+  manager: "Quản lý",
+  staff: "Nhân viên bán hàng",
+  customer: "Khách hàng",
+};
 
 const UserManager = () => {
   const [users, setUsers] = useState([]);
-const [showAddModal, setShowAddModal] = useState(false);
-
-const [newUsername, setNewUsername] = useState("");
-const [newEmail, setNewEmail] = useState("");
-const [newPassword, setNewPassword] = useState("");
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [newRole, setNewRole] = useState("");
-
-  const [newUser, setNewUser] = useState({
-    username: "",
-    email: "",
-    password: "",
-    role: "user",
-  });
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  /* ===== LOAD USERS ===== */
   const fetchUsers = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/users");
@@ -38,92 +34,74 @@ const [newPassword, setNewPassword] = useState("");
     }
   };
 
-  /* === EDIT ROLE === */
+  /* ===== EDIT ROLE ===== */
   const openEditRole = (user) => {
-    if (user.role === "admin") return;
+    if (user.role === "admin") return; // admin không được sửa
     setSelectedUser(user);
-    setNewRole(user.role);
+    setNewRole(user.role); // giữ nguyên EN để gửi API
     setShowRoleModal(true);
   };
 
   const updateRole = async () => {
-    await fetch(`http://localhost:5000/api/users/${selectedUser.user_id}/role`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ role: newRole }),
-    });
+    try {
+      await fetch(
+        `http://localhost:5000/api/users/${selectedUser.user_id}/role`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role: newRole }), // Gửi EN
+        }
+      );
 
-    setShowRoleModal(false);
-    fetchUsers();
+      setShowRoleModal(false);
+      fetchUsers();
+    } catch (error) {
+      console.error("Lỗi update role:", error);
+    }
   };
 
-  /* === DELETE === */
+  /* ===== DELETE USER ===== */
   const openDeleteUser = (user) => {
-    if (user.role === "admin") return;
+    if (user.role === "admin") return; // admin không được xóa
     setSelectedUser(user);
     setShowDeleteModal(true);
   };
 
   const deleteUser = async () => {
-    await fetch(`http://localhost:5000/api/users/${selectedUser.user_id}`, {
-      method: "DELETE",
-    });
+    try {
+      await fetch(`http://localhost:5000/api/users/${selectedUser.user_id}`, {
+        method: "DELETE",
+      });
 
-    setShowDeleteModal(false);
-    fetchUsers();
+      setShowDeleteModal(false);
+      fetchUsers();
+    } catch (error) {
+      console.error("Lỗi xóa user:", error);
+    }
   };
 
-  /* === CREATE USER === */
-  const createUser = async () => {
-  try {
-    const res = await fetch("http://localhost:5000/api/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: newUsername,
-        email: newEmail,
-        password: newPassword,
-        role: newRole,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message || "Lỗi không xác định");
-      return;
-    }
-
-    alert("Tạo tài khoản thành công!");
-    setShowAddModal(false);
-    fetchUsers();
-  } catch (error) {
-    console.error("Lỗi tạo user:", error);
-  }
-};
-
-
-  /* === ROLE BADGE === */
+  /* ===== HIỂN THỊ BADGE ROLE VIETNAMESE ===== */
   const renderRoleBadge = (role) => {
     const classes = {
       admin: "role-badge role-admin",
       manager: "role-badge role-manager",
       staff: "role-badge role-staff",
-      user: "role-badge role-user",
+      customer: "role-badge role-customer",
     };
-    return <span className={classes[role]}>{role}</span>;
+    return (
+      <span className={classes[role]}>
+        {ROLE_MAP[role] || "Không xác định"}
+      </span>
+    );
   };
 
   return (
     <Layout title="Quản lý người dùng">
       <div className="user-manager-wrapper">
         <div className="user-manager">
+          <h2>Quản lý phân quyền</h2>
 
-          <div className="header-row">
-            <h2>Quản lý phân quyền</h2>
-          </div>
-
-          {/* === TABLE === */}
+          {/* TABLE */}
           <table className="user-table">
             <thead>
               <tr>
@@ -181,102 +159,57 @@ const [newPassword, setNewPassword] = useState("");
               <div className="modal-content">
                 <h3>Đổi vai trò cho: {selectedUser.username}</h3>
 
+                {/* Dropdown tiếng Việt → gửi role English */}
                 <select
                   className="modal-select"
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value)}
                 >
-                  <option value="user">User</option>
-                  <option value="staff">Staff</option>
-                  <option value="manager">Manager</option>
+                  <option value="customer">Khách hàng</option>
+                  <option value="staff">Nhân viên bán hàng</option>
+                  <option value="manager">Quản lý</option>
                 </select>
 
                 <div className="modal-actions">
-                  <button className="save-btn" onClick={updateRole}>Lưu</button>
-                  <button className="cancel-btn" onClick={() => setShowRoleModal(false)}>Hủy</button>
+                  <button className="save-btn" onClick={updateRole}>
+                    Lưu
+                  </button>
+                  <button
+                    className="cancel-btn"
+                    onClick={() => setShowRoleModal(false)}
+                  >
+                    Hủy
+                  </button>
                 </div>
               </div>
             </div>
           )}
 
           {/* =====================
-              MODAL: DELETE
+              MODAL: DELETE USER
           ====================== */}
           {showDeleteModal && (
             <div className="modal">
               <div className="modal-content warning">
                 <h3>Bạn có chắc muốn xoá?</h3>
-                <p>User: <b>{selectedUser.username}</b></p>
+                <p>
+                  User: <b>{selectedUser.username}</b>
+                </p>
 
                 <div className="modal-actions">
-                  <button className="delete-confirm-btn" onClick={deleteUser}>Xoá</button>
-                  <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>Hủy</button>
+                  <button className="delete-confirm-btn" onClick={deleteUser}>
+                    Xoá
+                  </button>
+                  <button
+                    className="cancel-btn"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Hủy
+                  </button>
                 </div>
               </div>
             </div>
           )}
-
-          {/* =====================
-              MODAL: CREATE USER
-          ====================== */}
-          {showCreateModal && (
-            <div className="modal">
-                <div className="modal-content modern">
-
-                <h3 className="modal-title">Thêm tài khoản mới</h3>
-
-                <div className="form-group">
-                    <label>Tên đăng nhập</label>
-                    <input
-                    className="input"
-                    placeholder="Nhập tên đăng nhập"
-                    value={newUser.username}
-                    onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label>Email</label>
-                    <input
-                    className="input"
-                    placeholder="Nhập email"
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label>Mật khẩu</label>
-                    <input
-                    className="input"
-                    type="password"
-                    placeholder="Nhập mật khẩu"
-                    value={newUser.password}
-                    onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label>Vai trò</label>
-                    <select
-                    className="select"
-                    value={newUser.role}
-                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                    >
-                    <option value="user">User</option>
-                    <option value="staff">Staff</option>
-                    <option value="manager">Manager</option>
-                    </select>
-                </div>
-
-                <div className="modal-actions center">
-                    <button className="btn-primary" onClick={createUser}>Thêm</button>
-                    <button className="btn-secondary" onClick={() => setShowCreateModal(false)}>Hủy</button>
-                </div>
-                </div>
-            </div>
-            )}
-
         </div>
       </div>
     </Layout>
