@@ -7,7 +7,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Layout />}>
-          {AllRouters}  {/* ✅ Vẫn dùng AllRouters */}
+          {AllRouters}  
         </Route>
       </Routes>
     </Router>

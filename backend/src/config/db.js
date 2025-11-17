@@ -1,6 +1,7 @@
 import mysql from "mysql2";
 import dotenv from "dotenv";
 
+<<<<<<< HEAD
 dotenv.config();
 
 const db = mysql.createConnection({
@@ -19,3 +20,18 @@ db.connect((err) => {
 });
 
 export default db;
+=======
+export const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "SalesManagementDB"
+});
+
+export const connectDB = () => {
+  db.connect(err => {
+    if (err) console.error("❌ Lỗi kết nối MySQL:", err);
+    else console.log("✅ Kết nối MySQL thành công!");
+  });
+};
+>>>>>>> 2d52e924296be1a6bb8febb96754fb22dbf3c724
