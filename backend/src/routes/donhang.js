@@ -3,7 +3,7 @@ import { db } from "../config/db.js";
 
 const router = express.Router();
 
-// Tìm kiếm đơn hàng theo mã hoặc ngày
+// 6️⃣ Tìm kiếm đơn hàng theo mã hoặc ngày
 router.get("/search", (req, res) => {
   const { ma, ngay } = req.query;
 
@@ -22,7 +22,6 @@ router.get("/search", (req, res) => {
   }
 
   if (ngay) {
-    // Lọc theo ngày (yyyy-mm-dd)
     sql += " AND DATE(o.OrderDate) = ?";
     params.push(ngay);
   }
@@ -35,7 +34,7 @@ router.get("/search", (req, res) => {
   });
 });
 
-// 1. Lấy tất cả đơn hàng
+// 1️⃣ Lấy danh sách tất cả đơn hàng
 router.get("/", (req, res) => {
   const sql = `
     SELECT o.OrderID, c.FullName AS CustomerName, c.Phone AS CustomerPhone, o.OrderDate, o.Total, o.Status
@@ -49,7 +48,7 @@ router.get("/", (req, res) => {
   });
 });
 
-// 2. Lấy chi tiết một đơn hàng
+// 2️⃣ Lấy chi tiết một đơn hàng
 router.get("/:orderID", (req, res) => {
   const { orderID } = req.params;
 
@@ -99,7 +98,7 @@ router.get("/:orderID", (req, res) => {
   });
 });
 
-// 3. Xác nhận đơn hàng đã tiếp nhận
+// 3️⃣ Xác nhận đơn hàng đã tiếp nhận → Đang xử lý
 router.put("/:orderID/confirm", (req, res) => {
   const { orderID } = req.params;
   const sqlUpdate = `UPDATE \`Order\` SET Status='Đang xử lý' WHERE OrderID=?`;
@@ -113,21 +112,21 @@ router.put("/:orderID/confirm", (req, res) => {
   });
 });
 
-// 3.1. Xác nhận đơn hàng đang xử lý
+// 4️⃣ Chuyển đơn hàng từ 'Đang xử lý' → 'Đã giao'
 router.put("/:orderID/complete", (req, res) => {
   const { orderID } = req.params;
-  const sqlUpdate = `UPDATE \`Order\` SET Status='Hoàn thành' WHERE OrderID=?`;
+  const sqlUpdate = `UPDATE \`Order\` SET Status='Đã giao' WHERE OrderID=? AND Status='Đang xử lý'`;
 
   db.query(sqlUpdate, [orderID], (err, result) => {
     if (err) return res.status(500).json({ message: err.message });
     if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+      return res.status(400).json({ message: "Đơn hàng không ở trạng thái 'Đang xử lý'" });
     }
-    res.json({ message: "Đơn hàng đã hoàn thành" });
+    res.json({ message: "Đơn hàng đã giao" });
   });
 });
 
-// 4. Hủy đơn hàng
+// 5️⃣ Hủy đơn hàng
 router.put("/:orderID/cancel", (req, res) => {
   const { orderID } = req.params;
   const sqlUpdate = `UPDATE \`Order\` SET Status='Đã hủy' WHERE OrderID=?`;
@@ -141,21 +140,20 @@ router.put("/:orderID/cancel", (req, res) => {
   });
 });
 
-// Tạo đơn hàng mới
+// 7️⃣ Tạo đơn hàng mới
 router.post("/", async (req, res) => {
   const { khachHang, sanPham } = req.body;
 
-  if (!khachHang || !sanPham || sanPham.length === 0) {
+  if (!khachHang || !khachHang.ten || !khachHang.sdt || !khachHang.diachi) {
     return res.status(400).json({ message: "Dữ liệu đơn hàng không hợp lệ" });
   }
 
   try {
     let customerID;
 
-    // 1️ Kiểm tra khách hàng theo Phone
-    const sqlCheckCustomer = `SELECT CustomerID FROM Customer WHERE Phone = ?`;
+    // Kiểm tra khách hàng theo Phone
     const existingCustomer = await new Promise((resolve, reject) => {
-      db.query(sqlCheckCustomer, [khachHang.sdt], (err, result) => {
+      db.query("SELECT CustomerID FROM Customer WHERE Phone = ?", [khachHang.sdt], (err, result) => {
         if (err) return reject(err);
         resolve(result[0]);
       });
@@ -164,17 +162,11 @@ router.post("/", async (req, res) => {
     if (existingCustomer) {
       customerID = existingCustomer.CustomerID;
     } else {
-      // 2️ Thêm khách hàng mới
-      const sqlInsertCustomer = `INSERT INTO Customer (FullName, Phone, Email, Address) VALUES (?, ?, ?, ?)`;
+      // Thêm khách hàng mới
       const result = await new Promise((resolve, reject) => {
         db.query(
-          sqlInsertCustomer,
-          [
-            khachHang.ten,
-            khachHang.sdt,
-            khachHang.email || null,
-            khachHang.diachi,
-          ],
+          "INSERT INTO Customer (FullName, Phone, Address, Email) VALUES (?, ?, ?, ?)",
+          [khachHang.ten, khachHang.sdt, khachHang.diachi, khachHang.email || null],
           (err, result) => {
             if (err) return reject(err);
             resolve(result);
@@ -184,40 +176,30 @@ router.post("/", async (req, res) => {
       customerID = result.insertId;
     }
 
-    // 3️ Lọc sản phẩm hợp lệ
+    // Lọc sản phẩm hợp lệ
     const sanPhamHopLe = sanPham.filter((sp) => sp.ProductID && sp.soluong > 0);
-    if (sanPhamHopLe.length === 0) {
-      return res.status(400).json({ message: "Không có sản phẩm hợp lệ để tạo đơn" });
-    }
+    if (sanPhamHopLe.length === 0) return res.status(400).json({ message: "Không có sản phẩm hợp lệ" });
 
-    // 4️ Tính tổng tiền
-    const total = sanPhamHopLe.reduce(
-      (sum, sp) => sum + sp.soluong * sp.dongia,
-      0
-    );
+    const total = sanPhamHopLe.reduce((sum, sp) => sum + sp.soluong * sp.dongia, 0);
 
-    // 5️ Thêm đơn hàng
-    const sqlInsertOrder = `INSERT INTO \`Order\` (CustomerID, Total, Status) VALUES (?, ?, 'Đã tiếp nhận')`;
+    // Thêm đơn hàng
     const orderResult = await new Promise((resolve, reject) => {
-      db.query(sqlInsertOrder, [customerID, total], (err, result) => {
-        if (err) return reject(err);
-        resolve(result);
-      });
+      db.query(
+        "INSERT INTO `Order` (CustomerID, Total, Status) VALUES (?, ?, 'Đã tiếp nhận')",
+        [customerID, total],
+        (err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        }
+      );
     });
 
     const orderID = orderResult.insertId;
 
-    // 6️ Thêm chi tiết đơn hàng
-    const sqlInsertDetail = `INSERT INTO OrderDetail (OrderID, ProductID, Quantity, UnitPrice) VALUES ?`;
-    const values = sanPhamHopLe.map((sp) => [
-      orderID,
-      sp.ProductID,
-      sp.soluong,
-      sp.dongia,
-    ]);
-
+    // Thêm chi tiết đơn hàng
+    const values = sanPhamHopLe.map((sp) => [orderID, sp.ProductID, sp.soluong, sp.dongia]);
     await new Promise((resolve, reject) => {
-      db.query(sqlInsertDetail, [values], (err) => {
+      db.query("INSERT INTO OrderDetail (OrderID, ProductID, Quantity, UnitPrice) VALUES ?", [values], (err) => {
         if (err) return reject(err);
         resolve();
       });
@@ -225,21 +207,19 @@ router.post("/", async (req, res) => {
 
     res.status(201).json({ message: "Tạo đơn hàng thành công", orderID });
   } catch (err) {
-    console.error("Lỗi tạo đơn hàng:", err);
+    console.error(err);
     res.status(500).json({ message: "Tạo đơn hàng thất bại", error: err.message });
   }
 });
 
-// Xóa đơn hàng
+// 8️⃣ Xóa đơn hàng
 router.delete("/:orderID", (req, res) => {
   const { orderID } = req.params;
 
-  // Xóa chi tiết đơn hàng trước
   const sqlDeleteDetail = `DELETE FROM OrderDetail WHERE OrderID = ?`;
   db.query(sqlDeleteDetail, [orderID], (err) => {
     if (err) return res.status(500).json({ message: err.message });
 
-    // Xóa đơn hàng
     const sqlDeleteOrder = `DELETE FROM \`Order\` WHERE OrderID = ?`;
     db.query(sqlDeleteOrder, [orderID], (err2, result) => {
       if (err2) return res.status(500).json({ message: err2.message });

@@ -3,13 +3,13 @@ import { db } from "../config/db.js";
 
 const router = express.Router();
 
-// Chuyển đơn hàng từ 'Đang xử lý' sang 'Hoàn thành'
+// Chuyển đơn hàng từ 'Đang xử lý' sang 'Đã giao'
 router.put("/:orderID/complete", (req, res) => {
   const { orderID } = req.params;
 
   const sqlUpdate = `
     UPDATE \`Order\` 
-    SET Status='Hoàn thành' 
+    SET Status='Đã giao' 
     WHERE OrderID=? AND Status='Đang xử lý'
   `;
 
@@ -20,7 +20,7 @@ router.put("/:orderID/complete", (req, res) => {
       return res.status(400).json({ message: "Đơn hàng không ở trạng thái 'Đang xử lý'" });
     }
 
-    res.json({ message: "Đơn hàng đã hoàn thành" });
+    res.json({ message: "Đơn hàng đã giao" });
   });
 });
 
