@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 // frontend/src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+=======
+import { Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout/Layout";
+import AllRouters from "./routers/AllRouters";
+>>>>>>> origin/main
 
 import RegisterPage from "./pages/Auth/RegisterPage";
 import LoginPage from "./pages/Auth/LoginPage";
@@ -13,6 +19,7 @@ import Dashboard from "./pages/Admin/Dashboard"; // Nếu chưa có tạo file r
 
 const App = () => {
   return (
+<<<<<<< HEAD
     <Router>
       <Routes>
         {/* AUTH */}
@@ -45,6 +52,13 @@ const App = () => {
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
+=======
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        {AllRouters}
+      </Route>
+    </Routes>
+>>>>>>> origin/main
   );
 };
 

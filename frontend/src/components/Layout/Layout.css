@@ -1,38 +1,49 @@
+:root {
+  --sidebar-width: 260px;
+  --topbar-height: 60px;
+  --gutter: 24px;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
 .layout {
   display: flex;
+  min-height: 100vh; 
+  color: var(--fg, #222);
 }
 
 .main-content {
-  margin-left: 220px; /* bằng width sidebar */
-  margin-top: 60px;   /* bằng height topbar */
-  padding: 20px;
-  background: #f7f8fa;
-  min-height: calc(100vh - 60px);
+  margin-left: var(--sidebar-width);
+  margin-top: var(--topbar-height);
+  padding: var(--gutter);
   box-sizing: border-box;
+  width: calc(100% - var(--sidebar-width));
+  min-height: calc(100vh - var(--topbar-height));
+  transition: background 0.3s, color 0.3s;
 }
 
-/* Toàn bộ màn hình */
-.layout {
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  background: #f5f7fb;
+.layout.dark {
+  --bg: #0f0f0f;
+  --fg: #eee;
 }
 
-/* Sidebar */
-.layout-sidebar {
-  width: 260px;      /* rộng hơn */
-  background: #ffffff;
-  min-height: 100vh;
-  border-right: 1px solid #e5e7eb;
-  position: fixed;   /* giữ nguyên khi scroll */
-  left: 0;
-  top: 0;
+.layout.dark .main-content {
+  background: #121212;
+  color: #eee;
 }
 
-/* Nội dung bên phải */
-.layout-content {
-  margin-left: 260px !important;   /* CHỖ QUAN TRỌNG */
-  padding: 30px;
-  width: calc(100% - 260px);
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: 0px; 
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px;
+  }
 }
+

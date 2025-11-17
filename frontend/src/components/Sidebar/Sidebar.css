@@ -43,9 +43,16 @@
 
 /* Title */
 .sidebar-section li {
+  margin-bottom: 4px;
+}
+
+/* TOÀN BỘ LI CLICK ĐƯỢC */
+.sidebar-section li a,
+.dropdown-list li a {
   display: flex;
   align-items: center;
   gap: 12px;
+<<<<<<< HEAD
   padding: 10px 12px;
   font-size: 15px;
   color: #1f2937; /* text đen */
@@ -100,6 +107,43 @@
   padding: 8px;
   font-size: 14px;
   border-radius: 6px;
+=======
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.sidebar-section li a:hover,
+.dropdown-list li a:hover {
+  background-color: #e6f0ff;
+  color: #0b63d6;
+  transform: translateX(2px);
+}
+
+.sidebar-section li a.active,
+.dropdown-list li a.active {
+  background-color: #0b63d6;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* ==== DROPDOWN ==== */
+.dropdown-list {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  padding-left: 20px;
+  pointer-events: none;
+}
+
+.dropdown-list.show {
+  max-height: 200px;
+  opacity: 1;
+  pointer-events: auto;
+>>>>>>> origin/main
 }
 
 .darkmode {
@@ -143,6 +187,7 @@
     height: 100vh;
 }
 
+<<<<<<< HEAD
 .sidebar-footer {
   margin-top: auto;
   padding: 20px 10px 0;
@@ -174,4 +219,25 @@
   font-size: 16px;      /* nhỏ hơn */
   color: #111;          /* đen thuần */
   stroke-width: 2;      /* nét đậm */
+=======
+.sidebar.dark .sidebar-section li a,
+.sidebar.dark .dropdown-list li a {
+  color: #ccc;
+}
+
+.sidebar.dark .sidebar-section li a:hover,
+.sidebar.dark .dropdown-list li a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.sidebar.dark .sidebar-section li a.active,
+.sidebar.dark .dropdown-list li a.active {
+  background-color: #2196f3;
+  color: white;
+}
+
+.sidebar.dark .dropdown-list li a:hover {
+  background-color: #444;
+>>>>>>> origin/main
 }
