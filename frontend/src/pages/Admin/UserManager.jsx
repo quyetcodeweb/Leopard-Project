@@ -3,7 +3,6 @@ import Layout from "../../components/Layout/Layout";
 import "./UserManager.css";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-/* 🌟 Mapping Role: English → Vietnamese */
 const ROLE_MAP = {
   admin: "Quản trị viên",
   manager: "Quản lý",
@@ -96,10 +95,8 @@ const UserManager = () => {
   };
 
   return (
-    <Layout title="Quản lý người dùng">
       <div className="user-manager-wrapper">
         <div className="user-manager">
-          <h2>Quản lý phân quyền</h2>
 
           {/* TABLE */}
           <table className="user-table">
@@ -123,7 +120,7 @@ const UserManager = () => {
                     <td>
                       <button
                         className="edit-btn"
-                        onClick={() => openEditRole(user)}
+                        onClick={() => {console.log("CLICK EDIT:", user);openEditRole(user)}}
                         disabled={user.role === "admin"}
                         style={{ opacity: user.role === "admin" ? 0.35 : 1 }}
                       >
@@ -155,7 +152,7 @@ const UserManager = () => {
               MODAL: EDIT ROLE
           ====================== */}
           {showRoleModal && (
-            <div className="modal">
+            <div className="modal-popup">
               <div className="modal-content">
                 <h3>Đổi vai trò cho: {selectedUser.username}</h3>
 
@@ -189,8 +186,8 @@ const UserManager = () => {
               MODAL: DELETE USER
           ====================== */}
           {showDeleteModal && (
-            <div className="modal">
-              <div className="modal-content warning">
+            <div className="modal-popup">
+              <div className="modal-contentt warning">
                 <h3>Bạn có chắc muốn xoá?</h3>
                 <p>
                   User: <b>{selectedUser.username}</b>
@@ -212,7 +209,6 @@ const UserManager = () => {
           )}
         </div>
       </div>
-    </Layout>
   );
 };
 

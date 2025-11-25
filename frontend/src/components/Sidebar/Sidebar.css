@@ -1,47 +1,80 @@
 .sidebar {
   width: 260px;
-  background: #ffffff;
-  min-height: 100vh;
-  padding: 20px 20px 40px;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid #e6e6e6;
+  padding: 18px;
   position: fixed;
-  top: 0;
   left: 0;
+  top: 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+  transition: background 0.3s, color 0.3s;
 }
-
+.sidebar-content {
+  flex: 1; /* chiếm hết khoảng trống phía trên */
+  overflow-y: auto;
+}
+.sidebar-footer {
+  margin-top: auto; /* đẩy xuống dưới cùng */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* ==== LOGO ==== */
 .logo {
-  font-size: 26px;
-  font-weight: bold;
-  color: #1976d2;
-  margin-bottom: 25px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0b63d6;
+  margin-bottom: 14px;
 }
 
-/* User info */
+/* ==== USER BLOCK ==== */
 .user-block {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 25px;
+  gap: 10px;
+  padding: 10px 0 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 14px;
 }
 
 .sidebar-avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 2px solid #e5e7eb;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .user-name {
-  font-size: 15px;
   font-weight: 600;
+  font-size: 15px;
 }
 
 .user-role {
-  font-size: 13px;
+  font-size: 12px;
   color: #888;
 }
 
-/* Title */
+/* ==== MENU ==== */
+.sidebar-section h4 {
+  font-size: 13px;
+  color: #888;
+  margin: 10px 0 8px;
+}
+
+.sidebar-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+}
+
 .sidebar-section li {
   margin-bottom: 4px;
 }
@@ -52,62 +85,6 @@
   display: flex;
   align-items: center;
   gap: 12px;
-<<<<<<< HEAD
-  padding: 10px 12px;
-  font-size: 15px;
-  color: #1f2937; /* text đen */
-  cursor: pointer;
-  border-radius: 8px;
-  transition: 0.15s ease-in-out;
-}
-
-/* Icon mặc định màu đen */
-.sidebar-section li svg {
-  font-size: 18px;
-  color: #1f2937; /* icon đen */
-  transition: 0.15s;
-}
-
-/* Hover: icon + text chuyển màu xanh */
-.sidebar-section li:hover {
-  background: #eef4ff;
-  color: #2563eb;
-}
-
-.sidebar-section li:hover svg {
-  color: #2563eb;
-}
-
-/* Active */
-.sidebar-section li.active {
-  background: #eaf1ff;
-  color: #2563eb;
-  font-weight: 600;
-}
-
-.sidebar-section li.active svg {
-  color: #2563eb;
-}
-
-/* Dropdown */
-.dropdown-btn {
-  cursor: pointer;
-}
-
-.dropdown-list {
-  padding-left: 20px;
-  display: none;
-}
-
-.dropdown-list.show {
-  display: block;
-}
-
-.dropdown-list li {
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 6px;
-=======
   padding: 10px 16px;
   border-radius: 8px;
   color: #333;
@@ -143,83 +120,57 @@
   max-height: 200px;
   opacity: 1;
   pointer-events: auto;
->>>>>>> origin/main
 }
 
+/* ==== DARK MODE TOGGLE ==== */
 .darkmode {
-  margin-top: 25px;
-  padding: 15px 0;
-  border-top: 1px solid #e5e7eb;
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  font-size: 13px;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .toggle-switch {
-  width: 50px;
-  height: 25px;
-  background: #ddd;
-  border-radius: 20px;
+  width: 40px;
+  height: 22px;
+  background-color: #ddd;
+  border-radius: 50px;
   position: relative;
   cursor: pointer;
-  margin-top: 5px;
-}
-
-.toggle-switch.active {
-  background: #4caf50;
+  transition: background 0.3s;
 }
 
 .switch-circle {
-  width: 21px;
-  height: 21px;
-  background: #fff;
+  width: 18px;
+  height: 18px;
+  background: white;
   border-radius: 50%;
   position: absolute;
   top: 2px;
   left: 2px;
-  transition: 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active {
+  background-color: #0b63d6;
 }
 
 .toggle-switch.active .switch-circle {
-  left: 27px;
+  left: 20px;
 }
 
-.sidebar-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+/* ==== DARK MODE ==== */
+.sidebar.dark {
+  background: #1f1f1f;
+  color: #eee;
 }
 
-<<<<<<< HEAD
-.sidebar-footer {
-  margin-top: auto;
-  padding: 20px 10px 0;
-}
-
-.logout-btn {
-  width: 100%;
-  padding: 10px 0;
-  background: #ffffff;
-  border: 1.8px solid #d1d5db;   /* Viền xám nhạt */
-  color: #374151;               /* Text xám đậm */
-  border-radius: 50px;          /* Bo tròn pill */
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 15px;
-  transition: 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.logout-btn:hover {
-  background: #f3f4f6;          /* Hover sáng */
-  border-color: #9ca3af;
-}
-
-.logout-icon {
-  font-size: 16px;      /* nhỏ hơn */
-  color: #111;          /* đen thuần */
-  stroke-width: 2;      /* nét đậm */
-=======
 .sidebar.dark .sidebar-section li a,
 .sidebar.dark .dropdown-list li a {
   color: #ccc;
@@ -239,5 +190,31 @@
 
 .sidebar.dark .dropdown-list li a:hover {
   background-color: #444;
->>>>>>> origin/main
+}
+.logout-btn {
+  width: 100%;
+  padding: 10px 0;
+  background: #ffffff;
+  border: 1.8px solid #d1d5db;   
+  color: #374151;             
+  border-radius: 50px;         
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.logout-btn:hover {
+  background: #f3f4f6;     
+  border-color: #9ca3af;
+}
+
+.logout-icon {
+  font-size: 16px;      
+  color: #111;         
+  stroke-width: 2;      
 }

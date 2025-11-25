@@ -11,10 +11,13 @@ const Topbar = ({ darkMode = false }) => {
     "/dashboard": "Dashboard",
     "/products": "Sản phẩm",
     "/products/add": "Thêm sản phẩm",
-    "/products/edit": "Chỉnh sửa sản phẩm",
+    "/HistoryOrder": "Lịch sử đơn hàng",
     "/categories": "Danh mục",
-    "/users": "Quản lý người dùng",
+    "/user": "Quản lý người dùng",
     "/orders/cancelled": "Đơn hàng",
+    "/orders/processing": "Đơn hàng",
+    "/orders/received": "Đơn hàng",
+    "/orders/delivered": "Đơn hàng",
   };
 
   const title = routeTitles[location.pathname] || "Trang";

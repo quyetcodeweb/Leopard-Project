@@ -3,6 +3,7 @@ import { Route } from "react-router-dom";
 import Donhang from "../components/Donhang/Donhang";
 import ProductList from "../pages/Products/ProductList";
 import HistoryOrder from "../components/Lichsudonhang/Lichsudonhang";
+import UserManager from "../pages/Admin/UserManager";
 const AllRouters = (
   <>
     <Route index element={<ProductList />} />
@@ -13,7 +14,7 @@ const AllRouters = (
     <Route path="orders/delivered" element={<Donhang status="danggiao" />} />
     <Route path="orders/cancelled" element={<Donhang status="dahuy" />} />
     <Route path="HistoryOrder" element={<HistoryOrder />} />
-
+    <Route path="user" element={<UserManager />} />
   </>
 );
 

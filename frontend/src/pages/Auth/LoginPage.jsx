@@ -4,11 +4,10 @@ import axios from 'axios';
 import '../Auth/LoginPage.css'; 
 import '../Auth/AuthCommon.css';
 import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { BsCart2 } from "react-icons/bs"; // icon logo giỏ hàng
+import { BsCart2 } from "react-icons/bs"; 
 
 
 
-// ⭐ Cấu hình API Backend (Đảm bảo Node/Express server đang chạy ở đây)
 const API_BASE_URL = 'http://localhost:5000/api/auth'; 
 
 const LoginPage = () => {
@@ -78,7 +77,7 @@ const LoginPage = () => {
 
             // ⭐ CHUYỂN HƯỚNG ĐÚNG THEO PHÂN QUYỀN
             if (["admin", "manager", "staff"].includes(role)) {
-                navigate("/admin/dashboard"); // trang backoffice
+                navigate("/products"); // trang backoffice
             } else {
                 navigate("/homepage"); // trang khách hàng
             }
@@ -105,7 +104,6 @@ const LoginPage = () => {
     return (
         <div className="register-page"> 
             
-            {/* Cột Trái: Form Đăng Nhập */}
             <div className="register-form-container">
                 <h1 className="logo-sms">
                     <span className="logo-icon">🛒</span> SMS
@@ -116,7 +114,6 @@ const LoginPage = () => {
                     
                     {error && <p className="error-message">{error}</p>}
 
-                    {/* Input: Tên đăng nhập */}
                     <div className="input-group">
                     <input
                         type="text"
@@ -131,7 +128,6 @@ const LoginPage = () => {
                     <span className="input-icon"><FiUser /></span>
                     </div>
 
-                    {/* Input: Mật khẩu */}
                     <div className="input-group">
                     <input
                         type={showPassword ? "text" : "password"}
@@ -154,24 +150,20 @@ const LoginPage = () => {
                     </div>
 
                     
-                    {/* Link Quên mật khẩu */}
                     <div className="forgot-password-link">
                         <a href="/forgot-password" className="link-text">Quên mật khẩu?</a>
                     </div>
 
-                    {/* Nút Đăng nhập */}
                     <button type="submit" className="btn-auth" disabled={isLoading}>
                         {isLoading ? 'Đang xử lý...' : 'Đăng nhập'}
                     </button>
                 </form>
 
-                {/* Link Đăng ký */}
                 <p className="auth-link-footer">
                     Chưa có tài khoản? <a href="/register" className="link-text">Đăng ký</a>
                 </p>
             </div>
 
-            {/* Cột Phải: Hình Minh Họa */}
             <div className="illustration-container">
                 <div className="illustration-content">
                     <img 
