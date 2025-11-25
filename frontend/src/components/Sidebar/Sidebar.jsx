@@ -29,7 +29,7 @@ const handleLogout = () => {
     <aside className={`sidebar ${darkMode ? "dark" : ""}`}>
       {/* LOGO */}
       <div className="logo-area">
-        <img src="/images/logo_sms_blue.png" alt="SMS Logo" className="logo-img" />
+        <img src="/images/logoleo.png" alt="SMS Logo" className="logo-img" />
       </div>
 
       {/* USER INFO */}

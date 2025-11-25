@@ -105,3 +105,31 @@ export const toggleProductStatus = (req, res) => {
     });
   });
 };
+// 📦 Cập nhật tồn kho (nhập/xuất)
+export const updateStock = (req, res) => {
+  const { id } = req.params;
+  const { quantity, type } = req.body;
+
+  if (quantity === undefined || type === undefined) {
+    return res.status(400).json({ error: "Thiếu quantity hoặc type" });
+  }
+
+  const sqlSelect = "SELECT Stock FROM Product WHERE ProductID=?";
+  db.query(sqlSelect, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (results.length === 0) return res.status(404).json({ error: "Sản phẩm không tồn tại" });
+
+    const currentStock = results[0].Stock;
+    const newStock = currentStock + quantity;
+
+    if (newStock < 0) {
+      return res.status(400).json({ error: "Không thể trừ vượt quá tồn kho!" });
+    }
+
+    const sqlUpdate = "UPDATE Product SET Stock=? WHERE ProductID=?";
+    db.query(sqlUpdate, [newStock, id], (err2) => {
+      if (err2) return res.status(500).json({ error: err2.message });
+      res.json({ ProductID: id, Stock: newStock, type });
+    });
+  });
+};

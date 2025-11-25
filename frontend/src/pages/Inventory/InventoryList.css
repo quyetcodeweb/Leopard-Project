@@ -1,0 +1,266 @@
+
+.inventory-page {
+  padding: 20px;
+  background-color: #f5f6fa;
+  min-height: 80vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* === Toolbar === */
+.inventory-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.inventory-toolbar input[type="text"] {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 220px;
+  outline: none;
+}
+
+.inventory-toolbar select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.inventory-toolbar button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #2f80ed;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 14px;
+}
+
+.inventory-toolbar button:hover {
+  background-color: #1366d6;
+}
+
+/* === Table === */
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.inventory-table th, .inventory-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.inventory-table th {
+  background-color: #fafafa;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.inventory-table tr:hover {
+  background-color: #f0f4ff;
+}
+
+.inventory-table td img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover; /* giữ tỉ lệ, crop nếu cần */
+  border-radius: 6px;
+  display: block;
+  margin: 0 auto;
+  transition: transform 0.3s;
+}
+
+.inventory-table td img:hover {
+  transform: scale(1.9);
+}
+
+.inv-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+}
+
+.inv-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* === Stock Status === */
+.inv-warning {
+  color: #f44336;
+  font-weight: bold;
+}
+
+.inv-ok {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+/* === Buttons in table === */
+.inv-actions button {
+  background-color: #ff7a45;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.inv-actions button:hover {
+  background-color: #e3622b;
+}
+
+/* === Pagination === */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.page-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.page-btn.active {
+  background-color: #2f80ed;
+  color: white;
+  border-color: #2f80ed;
+}
+
+.page-btn:disabled {
+  cursor: default;
+  background-color: #f5f5f5;
+}
+
+/* === Input số lượng cho InOut modal === */
+.inout-input {
+  width: 80px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  text-align: center;
+  font-size: 14px;
+}
+
+.inout-button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2f80ed;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+  transition: 0.2s;
+}
+
+.inout-button:hover {
+  background-color: #1366d6;
+}
+.inv-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px; /* bo tròn */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+}
+
+.inv-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* giữ tỉ lệ, crop nếu cần */
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+.inv-out {
+  color: red;
+  font-weight: bold;
+}
+
+/* Hover effect ảnh */
+.inv-avatar img:hover {
+  transform: scale(1.1);
+}
+
+/* Nếu không có ảnh */
+.inv-avatar::after {
+  content: "No Image";
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+}
+.no-image {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  color: #999;
+  font-size: 12px;
+  border-radius: 6px;
+}
+/* === Nút Nhập/Xuất trong table === */
+.btn-inout {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #27ae60; /* xanh lá nổi bật */
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.btn-inout:hover {
+  background-color: #1e8449; /* sẫm hơn khi hover */
+  transform: translateY(-1px);
+}
+
+.btn-inout:active {
+  transform: translateY(0);
+  background-color: #196f3d;
+}

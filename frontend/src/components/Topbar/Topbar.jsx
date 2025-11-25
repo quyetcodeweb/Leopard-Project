@@ -18,6 +18,7 @@ const Topbar = ({ darkMode = false }) => {
     "/orders/processing": "Đơn hàng",
     "/orders/received": "Đơn hàng",
     "/orders/delivered": "Đơn hàng",
+    "/warehouse": "Kho hàng",
   };
 
   const title = routeTitles[location.pathname] || "Trang";
