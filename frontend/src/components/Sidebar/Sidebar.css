@@ -7,27 +7,36 @@
   position: fixed;
   left: 0;
   top: 0;
-  overflow-y: auto;
+  display: flex;             
+  flex-direction: column;     
   box-sizing: border-box;
-  transition: background 0.3s, color 0.3s;
+  overflow-y: auto;           
 }
+
 .sidebar-content {
-  flex: 1; /* chiếm hết khoảng trống phía trên */
-  overflow-y: auto;
+  flex: 1;
+  overflow-y: auto; 
+  padding-right: 8px; 
 }
+
 .sidebar-footer {
-  margin-top: auto; /* đẩy xuống dưới cùng */
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #dcdcdc;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+
 /* ==== LOGO ==== */
-.logo {
-  font-size: 20px;
-  font-weight: 700;
-  color: #0b63d6;
-  margin-bottom: 14px;
+.logo-img {
+  width: 70px;       /* chiều rộng cố định */
+  height: 70px;      /* chiều cao cố định */
+  object-fit: contain; /* giữ nguyên tỷ lệ, không méo */
+  display: block;
+  margin: 0 auto;
 }
+
 
 /* ==== USER BLOCK ==== */
 .user-block {
@@ -124,10 +133,11 @@
 
 /* ==== DARK MODE TOGGLE ==== */
 .darkmode {
-  position: absolute;
-  bottom: 18px;
-  left: 18px;
-  right: 18px;
+  font-size: 13px;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 13px;
   color: #555;
   display: flex;
