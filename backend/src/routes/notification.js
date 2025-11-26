@@ -14,6 +14,7 @@ function classifyNotification(title, content) {
     "xóa",
     "hoàn thành",
     "giao",
+    "created",
   ];
   const warningKeywords = [
     "cảnh báo",
@@ -24,7 +25,8 @@ function classifyNotification(title, content) {
     "lỗi",
     "nhập đầy đủ",
     "không tìm thấy",
-    "chọn"
+    "chọn",
+    "hết hạn",
   ];
 
   const text = `${title} ${content}`.toLowerCase();

@@ -1,0 +1,138 @@
+.voucher-container {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* TITLE */
+.voucher-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+/* =========================
+   HÀNG TRÊN: SEARCH + BUTTONS
+   ========================= */
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Search chiếm hết phần trái */
+.top-left {
+  flex: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #c9c9c9;
+  border-radius: 6px;
+}
+
+/* Buttons bên phải */
+.top-right {
+  display: flex;
+  gap: 12px;
+}
+
+.clear-filter {
+  background: #4b83ff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.add-btn {
+  background: #40c057;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* =========================
+   HÀNG DƯỚI: 4 FILTER
+   ========================= */
+.filter-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.date-group,
+.select-group {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.date-group input,
+.select-group select {
+  padding: 10px;
+  width: 180px;
+  border: 1px solid #c9c9c9;
+  border-radius: 6px;
+}
+
+/* TABLE */
+.voucher-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.voucher-table th {
+  background: #e8f3ff;
+  font-weight: 600;
+  padding: 12px;
+  border-bottom: 2px solid #d8d8d8;
+}
+
+.voucher-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.action-cell {
+  text-align: center;
+  cursor: pointer;
+}
+
+/* PAGINATION */
+.pagination {
+  margin-top: 15px;
+  text-align: right;
+  color: #6e6e6e;
+  font-size: 14px;
+}
+
+
+.page-number {
+  font-weight: bold;
+  padding: 0 4px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #555; /* icon màu xám đậm */
+}
+
+.icon-btn:hover {
+  opacity: 0.6;
+}
+

@@ -10,8 +10,8 @@ import ordersRoutes from "./routes/orders.js";
 import sanphamRoutes from "./routes/sanpham.js";
 import authRouter from "./routes/authRoute.js";
 import userRoutes from "./routes/userRoute.js";
-import SMGRoutes from "./routes/SMG.js";
 import notificationRoutes from "./routes/notification.js";
+import voucherRoutes from "./routes/voucherRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -26,8 +26,8 @@ app.use("/api/orders", ordersRoutes);
 app.use("/api/sanpham", sanphamRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRoutes);
-app.use("/api/SMG", SMGRoutes); 
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/vouchers", voucherRoutes);
 app.get("/", (req, res) => {
   res.send("🚀 LeopardProject API đang hoạt động!");
 });

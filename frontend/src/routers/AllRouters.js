@@ -5,6 +5,7 @@ import ProductList from "../pages/Products/ProductList";
 import HistoryOrder from "../components/Lichsudonhang/Lichsudonhang";
 import UserManager from "../pages/Admin/UserManager";
 import BellThongBao from "../components/Thongbao/BellThongBao";
+import VoucherManager from "../pages/Admin/VoucherManager";
 const AllRouters = (
   <>
     <Route index element={<ProductList />} />
@@ -17,6 +18,7 @@ const AllRouters = (
     <Route path="HistoryOrder" element={<HistoryOrder />} />
     <Route path="user" element={<UserManager />} />
     <Route path="tb" element={<BellThongBao />} />
+    <Route path="coupons" element={<VoucherManager />} />
   </>
 );
 
