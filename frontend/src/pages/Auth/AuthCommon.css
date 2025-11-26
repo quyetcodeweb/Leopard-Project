@@ -1,0 +1,161 @@
+.register-form * {
+    box-sizing: border-box; 
+}
+
+/* --- 2. Container Chính (Bố cục 2 cột) --- */
+.register-page {
+    display: flex;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+/* --- 3. Cột Trái: Form Container --- */
+.register-form-container {
+    flex: 1; /* Chiếm 50% */
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(to right, #f8f8f8, #e0e0f8); 
+}
+
+/* Logo */
+.logo-sms {
+    font-size: 2.5rem;
+    color: #3f51b5; 
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+/* Tiêu đề Form */
+.auth-title { /* Đổi tên thành auth-title để dùng chung cho Đăng ký & Đăng nhập */
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Vùng Form Container */
+.register-form {
+    width: 80%;
+    max-width: 350px; 
+}
+
+/* --- 4. Input Fields (Trường nhập liệu) --- */
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+    width: 100%; 
+}
+
+.input-field {
+    width: 100%; 
+    padding: 15px 15px 15px 45px; 
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-field:focus {
+    border-color: #3f51b5;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* Hiển thị lỗi */
+.input-error-border {
+    border-color: #f44336 !important; 
+}
+
+.error-message {
+    color: #f44336; 
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* --- 5. Button (Nút Đăng ký/Đăng nhập) --- */
+.btn-auth { /* Đổi tên thành btn-auth để dùng chung */
+    width: 100%; 
+    padding: 15px;
+    background-color: #3f51b5; 
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.btn-auth:hover {
+    background-color: #303f9f;
+}
+
+/* Link Chung (VD: Đã có tài khoản?/Chưa có tài khoản?) */
+.auth-link-footer { /* Đổi tên thành auth-link-footer */
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: #666;
+    text-align: center;
+    width: 100%;
+    max-width: 350px;
+}
+
+.link-text {
+    color: #673ab7; 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link-text:hover {
+    text-decoration: underline;
+}
+
+/* --- 6. Cột Phải: Hình Minh Họa --- */
+.illustration-container { /* Đổi tên thành illustration-container để dùng chung */
+    flex: 1; 
+    background: linear-gradient(to bottom right, #3f51b5, #0d1a4d); 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 20px;
+    position: relative; 
+}
+
+.illustration-image { /* Đổi tên thành illustration-image để dùng chung */
+    max-width: 80%; 
+    height: auto; 
+    display: block; 
+    margin-bottom: 20px; 
+}
+
+.illustration-caption {
+    position: absolute;
+    bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: 300;
+}
+
+.input-icon {
+  color: #000; /* viền đen */
+  font-size: 18px;
+}
+
+.logo-icon {
+  color: #000;
+  font-size: 28px;
+  margin-right: 6px;
+  vertical-align: middle;
+}

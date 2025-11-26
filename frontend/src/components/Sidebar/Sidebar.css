@@ -1,0 +1,220 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid #e6e6e6;
+  padding: 18px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+  transition: background 0.3s, color 0.3s;
+}
+.sidebar-content {
+  flex: 1; /* chiếm hết khoảng trống phía trên */
+  overflow-y: auto;
+}
+.sidebar-footer {
+  margin-top: auto; /* đẩy xuống dưới cùng */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* ==== LOGO ==== */
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0b63d6;
+  margin-bottom: 14px;
+}
+
+/* ==== USER BLOCK ==== */
+.user-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 14px;
+}
+
+.sidebar-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #888;
+}
+
+/* ==== MENU ==== */
+.sidebar-section h4 {
+  font-size: 13px;
+  color: #888;
+  margin: 10px 0 8px;
+}
+
+.sidebar-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+}
+
+.sidebar-section li {
+  margin-bottom: 4px;
+}
+
+/* TOÀN BỘ LI CLICK ĐƯỢC */
+.sidebar-section li a,
+.dropdown-list li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.sidebar-section li a:hover,
+.dropdown-list li a:hover {
+  background-color: #e6f0ff;
+  color: #0b63d6;
+  transform: translateX(2px);
+}
+
+.sidebar-section li a.active,
+.dropdown-list li a.active {
+  background-color: #0b63d6;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* ==== DROPDOWN ==== */
+.dropdown-list {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  padding-left: 20px;
+  pointer-events: none;
+}
+
+.dropdown-list.show {
+  max-height: 200px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ==== DARK MODE TOGGLE ==== */
+.darkmode {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  font-size: 13px;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-switch {
+  width: 40px;
+  height: 22px;
+  background-color: #ddd;
+  border-radius: 50px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.switch-circle {
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active {
+  background-color: #0b63d6;
+}
+
+.toggle-switch.active .switch-circle {
+  left: 20px;
+}
+
+/* ==== DARK MODE ==== */
+.sidebar.dark {
+  background: #1f1f1f;
+  color: #eee;
+}
+
+.sidebar.dark .sidebar-section li a,
+.sidebar.dark .dropdown-list li a {
+  color: #ccc;
+}
+
+.sidebar.dark .sidebar-section li a:hover,
+.sidebar.dark .dropdown-list li a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.sidebar.dark .sidebar-section li a.active,
+.sidebar.dark .dropdown-list li a.active {
+  background-color: #2196f3;
+  color: white;
+}
+
+.sidebar.dark .dropdown-list li a:hover {
+  background-color: #444;
+}
+.logout-btn {
+  width: 100%;
+  padding: 10px 0;
+  background: #ffffff;
+  border: 1.8px solid #d1d5db;   
+  color: #374151;             
+  border-radius: 50px;         
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.logout-btn:hover {
+  background: #f3f4f6;     
+  border-color: #9ca3af;
+}
+
+.logout-icon {
+  font-size: 16px;      
+  color: #111;         
+  stroke-width: 2;      
+}
