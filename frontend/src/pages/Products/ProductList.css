@@ -266,7 +266,7 @@
   transition: 0.25s;
 }
 .preview-avatar:hover {
-  transform: scale(1.05);
+  transform: scale(1.9);
 }
 
 /* === LOW STOCK WARNING === */
@@ -363,7 +363,7 @@
   gap: 10px;
 }
 /* Nút Hủy */
-.btn-cancel {
+.btn-cancell {
   background-color: #ccc; /* xám nhạt */
   color: #333;
   border: none;
@@ -376,12 +376,12 @@
   transition: background-color 0.2s;
 }
 
-.btn-cancel:hover {
+.btn-cancell:hover {
   background-color: #bbb;
 }
 
 /* Nút Xóa */
-.btn-delete {
+.btn-deletee {
   background-color: #e74c3c; /* đỏ */
   color: #fff;
   border: none;
@@ -393,7 +393,7 @@
   transition: background-color 0.2s;
 }
 
-.btn-delete:hover {
+.btn-deletee:hover {
   background-color: #c0392b;
 }
 .pagination {

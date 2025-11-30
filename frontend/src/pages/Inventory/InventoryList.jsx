@@ -202,6 +202,7 @@ const InventoryList = () => {
           th { background-color: #f0f0f0; }
           .low-stock { color: orange; font-weight: bold; }
           .out-of-stock { color: red; font-weight: bold; }
+          .ok-stock { color: green; font-weight: bold; }
         </style>
       </head>
       <body>
@@ -209,6 +210,7 @@ const InventoryList = () => {
         <table>
           <thead>
             <tr>
+              <th>STT</th>
               <th>Mã SP</th>
               <th>Tên SP</th>
               <th>Danh mục</th>
@@ -217,15 +219,16 @@ const InventoryList = () => {
             </tr>
           </thead>
           <tbody>
-            ${products.map(p => `
+            ${products.map((p, idx) => `
               <tr>
+                <td>${idx + 1}</td>
                 <td>${p.ProductID}</td>
                 <td>${p.ProductName}</td>
                 <td>${categories.find(c => c.CategoryID === p.CategoryID)?.CategoryName || "Không có"}</td>
                 <td>${p.Stock}</td>
                 <td>
                   ${p.Stock === 0 ? '<span class="out-of-stock">Hết hàng</span>' :
-                  p.Stock < p.WarningStock ? '<span class="low-stock">Sắp hết</span>' : 'Đủ hàng'}
+                  p.Stock < p.WarningStock ? '<span class="low-stock">Sắp hết</span>' : '<span class="ok-stock">Còn hàng</span>'}
                 </td>
               </tr>
             `).join("")}
@@ -299,7 +302,7 @@ const InventoryList = () => {
                 ) : p.Stock <= p.WarningStock ? (
                     <span className="inv-warning">⚠ Sắp hết</span>
                 ) : (
-                    <span className="inv-ok">Đủ hàng</span>
+                    <span className="inv-ok">Còn hàng</span>
                 )}
                 </td>
               <td>
