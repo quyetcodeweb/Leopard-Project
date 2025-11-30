@@ -6,8 +6,8 @@ const DeleteProductPopup = ({ product, onClose, onDelete }) => {
       <div className="modalpopup">
         <h3>Xóa sản phẩm</h3>
         <p>Bạn có chắc muốn xóa sản phẩm <strong>{product?.ProductName}</strong> không?</p>
-        <button className="btn-cancel" onClick={onClose}>Hủy</button>
-        <button className="btn-delete" onClick={() => onDelete(product)}>Xóa</button>
+        <button className="btn-cancell" onClick={onClose}>Hủy</button>
+        <button className="btn-deletee" onClick={() => onDelete(product)}>Xóa</button>
       </div>
     </div>
   );
