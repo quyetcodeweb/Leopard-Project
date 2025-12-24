@@ -236,3 +236,10 @@ CREATE TABLE users (
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO users VALUES (1,'admin_user','admin@gmail.com','$2b$10$iM8D2.wB/G8P9ZzYw2jEjeq5vF3t2dF3x/E9G4t8','admin','2025-11-13 06:41:31'),(3,'thang1','le7283140@gmail.com','Quocthang__2004','manager','2025-11-13 12:24:43'),(10,'thangcui','ssddsd2@gmail.com','Quocthang__2004','customer','2025-11-15 08:24:55');
+
+CREATE TABLE password_resets (
+    email VARCHAR(100) PRIMARY KEY,
+    otp_code VARCHAR(6) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
