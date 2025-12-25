@@ -22,33 +22,29 @@ const AddVoucherModal = ({ onClose }) => {
   };
 
   const handleSave = async () => {
-
-    // ⭐ GHÉP START DATE + TIME → datetime chuẩn
     const startDateTime =
       form.startDate && form.startTime
         ? `${form.startDate} ${form.startTime}:00`
         : null;
 
-    // ⭐ GHÉP END DATE + TIME → datetime chuẩn
     const expirationDateTime =
       form.endDate && form.endTime
         ? `${form.endDate} ${form.endTime}:00`
         : null;
 
-    // ⭐ Status mapping FE → BE
     const statusMap = { active: 1, inactive: 2 };
-    const statusValue = statusMap[form.status];
 
     const data = {
       code: form.code,
-      discountPercent: form.value,
-      startDate: startDateTime,          // ⭐ BẮT BUỘC GỬI
-      expirationDate: expirationDateTime, // ⭐ BẮT BUỘC GỬI
+      type: form.type,                // ⭐ THÊM
+      discountValue: form.value,      // ⭐ THÊM
+      startDate: startDateTime,
+      expirationDate: expirationDateTime,
       maxUse: form.quantity,
-      status: statusValue,
+      status: statusMap[form.status],
     };
 
-    console.log("DATA SENT TO BACKEND:", data);
+    console.log("DATA SENT:", data);
 
     try {
       const res = await fetch("http://localhost:5000/api/vouchers", {
@@ -147,9 +143,12 @@ const AddVoucherModal = ({ onClose }) => {
               </span>
             </div>
 
-            <div className="form-subtext red">
-              ❗ Từ 1% đến 100%
-            </div>
+            {form.type === "%" && (
+              <div className="form-subtext red">
+                ❗ Từ 1% đến 100%
+              </div>
+            )}
+
 
             {form.type === "%" && (
               <div className="row-3">

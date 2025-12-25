@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "./AddVoucherModal.css"; // Reuse CSS
 
-const EditVoucherModal = ({ voucher, onClose, onSuccess }) => {
+const splitDateTime = (dt) => {
+  if (!dt) return { date: "", time: "" };
+  const [date, time] = dt.replace("T", " ").split(" ");
+  return {
+    date,
+    time: time ? time.substring(0, 5) : "",
+  };
+};
+
+const EditVoucherModal = ({ voucher, onClose, onSaved }) => {
   const [form, setForm] = useState({
     code: "",
     description: "",
@@ -17,40 +26,28 @@ const EditVoucherModal = ({ voucher, onClose, onSuccess }) => {
     status: "active",
   });
 
-  // ⭐ Parse datetime "2025-01-10T00:00:00"
-  const splitDateTime = (dt) => {
-    if (!dt) return { date: "", time: "" };
-    const [date, time] = dt.split("T");
-    return {
-      date,
-      time: time ? time.slice(0, 5) : "",
-    };
-  };
-
-  // ⭐ Khi mở popup → load dữ liệu vào form
   useEffect(() => {
+    if (!voucher) return;
+
     const start = splitDateTime(voucher.StartDate);
     const end = splitDateTime(voucher.ExpirationDate);
 
     setForm({
       code: voucher.Code || "",
       description: voucher.Description || "",
-
       type: voucher.DiscountPercent > 0 ? "%" : "VND",
-
-      value: voucher.DiscountPercent > 0 ? voucher.DiscountPercent : voucher.Value || "",
+      value:
+        voucher.DiscountPercent > 0
+          ? voucher.DiscountPercent
+          : voucher.DiscountAmount || "",
       maxValue: voucher.MaxValue || "",
-
       startDate: start.date,
       startTime: start.time,
-
       endDate: end.date,
       endTime: end.time,
-
       quantity: voucher.MaxUse || "",
       minOrder: voucher.MinOrder || "",
-
-      status: voucher.Status == 1 ? "active" : "inactive",
+      status: voucher.Status === 1 ? "active" : "inactive",
     });
   }, [voucher]);
 
@@ -58,6 +55,7 @@ const EditVoucherModal = ({ voucher, onClose, onSuccess }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // ✅ CHỈ SỬA LOGIC
   const handleUpdate = async () => {
     const startDateTime =
       form.startDate && form.startTime
@@ -69,28 +67,22 @@ const EditVoucherModal = ({ voucher, onClose, onSuccess }) => {
         ? `${form.endDate} ${form.endTime}:00`
         : null;
 
-    const statusMap = { active: 1, inactive: 2 };
-    const statusValue = statusMap[form.status];
+    const statusValue = form.status === "active" ? 1 : 2;
 
+    // ✅ MAP ĐÚNG BACKEND (QUAN TRỌNG)
     const data = {
       code: form.code,
-      description: form.description,
-
-      discountPercent: form.type === "%" ? form.value : 0,
-      value: form.type === "VND" ? form.value : null,
-      maxValue: form.type === "%" ? form.maxValue : null,
-
+      type: form.type,
+      discountValue: Number(form.value),
       startDate: startDateTime,
       expirationDate: expirationDateTime,
-
-      maxUse: form.quantity,
-      minOrder: form.minOrder,
-
+      maxUse: Number(form.quantity),
       status: statusValue,
     };
 
-    console.log("DATA UPDATE:", data);
+    let result;
 
+    // ✅ CHỈ BẮT LỖI UPDATE
     try {
       const res = await fetch(
         `http://localhost:5000/api/vouchers/${voucher.VoucherID}`,
@@ -101,14 +93,28 @@ const EditVoucherModal = ({ voucher, onClose, onSuccess }) => {
         }
       );
 
-      const result = await res.json();
-      alert(result.message || "Cập nhật thành công");
-      onSuccess();
-      onClose();
+      if (!res.ok) {
+        throw new Error("Update failed");
+      }
+
+      result = await res.json();
     } catch (err) {
-      console.error(err);
+      console.error("Update voucher error:", err);
       alert("Lỗi khi cập nhật voucher");
+      return;
     }
+
+    // ✅ UPDATE OK
+    alert(result.message || "Cập nhật thành công");
+
+    // ✅ reload list nhưng KHÔNG được làm fail update
+    try {
+      await onSaved();
+    } catch (e) {
+      console.warn("Reload voucher list failed", e);
+    }
+
+    onClose();
   };
 
   return (

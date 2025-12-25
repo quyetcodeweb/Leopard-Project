@@ -35,6 +35,9 @@ const VoucherManager = () => {
     loadVouchers();
   }, []);
 
+  // =====================
+  // FILTER LOGIC (ĐÃ SỬA)
+  // =====================
   const filtered = vouchers.filter((v) => {
     if (search && !v.Code.toLowerCase().includes(search.toLowerCase())) return false;
     if (startDate && v.StartDate?.slice(0, 10) < startDate) return false;
@@ -42,7 +45,7 @@ const VoucherManager = () => {
 
     if (typeFilter !== "all") {
       if (typeFilter === "percent" && v.DiscountPercent <= 0) return false;
-      if (typeFilter === "cash" && v.DiscountPercent > 0) return false;
+      if (typeFilter === "cash" && v.DiscountAmount <= 0) return false;
     }
 
     if (statusFilter !== "all" && `${v.Status}` !== statusFilter) return false;
@@ -141,7 +144,7 @@ const VoucherManager = () => {
       <table className="voucher-table">
         <thead>
           <tr>
-            <th> </th> {/* EDIT ICON ĐẦU DÒNG */}
+            <th> </th>
             <th>STT</th>
             <th>Mã</th>
             <th>Loại</th>
@@ -149,7 +152,7 @@ const VoucherManager = () => {
             <th>Ngày bắt đầu</th>
             <th>Ngày kết thúc</th>
             <th>Trạng thái</th>
-            <th> </th> {/* DELETE ICON CUỐI DÒNG */}
+            <th> </th>
           </tr>
         </thead>
 
@@ -165,36 +168,26 @@ const VoucherManager = () => {
           ) : (
             filtered.map((v, i) => (
               <tr key={v.VoucherID}>
-
-                {/* EDIT ICON */}
-                <td className="action-cell">
-                  <button className="icon-btn" onClick={() => onOpenEdit(v)}>
-                    <svg width="20" height="20" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 20h9" />
-                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
-                    </svg>
-                  </button>
-                </td>
+                <td className="action-cell"> <button className="icon-btn" onClick={() => onOpenEdit(v)}> <svg width="20" height="20" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <path d="M12 20h9" /> <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" /> </svg> </button> </td>
 
                 <td>{i + 1}</td>
                 <td>{v.Code}</td>
+
                 <td>{v.DiscountPercent > 0 ? "%" : "VND"}</td>
-                <td>{v.DiscountPercent > 0 ? `${v.DiscountPercent}%` : v.Value ? `${v.Value}đ` : "-"}</td>
+
+                <td>
+                  {v.DiscountPercent > 0
+                    ? `${v.DiscountPercent}%`
+                    : v.DiscountAmount > 0
+                    ? `${v.DiscountAmount.toLocaleString()}đ`
+                    : "-"}
+                </td>
+
                 <td>{v.StartDate?.slice(0, 10)}</td>
                 <td>{v.ExpirationDate?.slice(0, 10)}</td>
                 <td>{getStatusText(v.Status)}</td>
 
-                {/* DELETE ICON */}
-                <td className="action-cell">
-                  <button className="icon-btn" onClick={() => onOpenDelete(v)}>
-                    <svg width="20" height="20" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6l-1 14H6L5 6m5 0V4h4v2" />
-                      <line x1="10" y1="11" x2="10" y2="17" />
-                      <line x1="14" y1="11" x2="14" y2="17" />
-                    </svg>
-                  </button>
-                </td>
+                <td className="action-cell"> <button className="icon-btn" onClick={() => onOpenDelete(v)}> <svg width="20" height="20" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <polyline points="3 6 5 6 21 6" /> <path d="M19 6l-1 14H6L5 6m5 0V4h4v2" /> <line x1="10" y1="11" x2="10" y2="17" /> <line x1="14" y1="11" x2="14" y2="17" /> </svg> </button> </td>
               </tr>
             ))
           )}
@@ -216,7 +209,7 @@ const VoucherManager = () => {
         <EditVoucherModal
           voucher={openEdit}
           onClose={() => setOpenEdit(null)}
-          onSuccess={() => loadVouchers()}
+          onSaved={loadVouchers}
         />
       )}
 
