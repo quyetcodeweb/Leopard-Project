@@ -6,9 +6,6 @@ import {
   deleteVoucher,
   applyVoucher
 } from "../controllers/voucherController.js";
-import {
-  updateVoucherStatus
-} from "../controllers/Updatetrangthai.js";
 
 const router = express.Router();
 
@@ -19,8 +16,5 @@ router.delete("/:id", deleteVoucher);
 
 // optional apply endpoint
 router.post("/apply", applyVoucher);
-
-// Dev truong code: gọi API để update trạng thái voucher
-router.post("/update-status", updateVoucherStatus);
 
 export default router;

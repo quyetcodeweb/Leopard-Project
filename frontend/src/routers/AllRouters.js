@@ -4,7 +4,11 @@ import Donhang from "../components/Donhang/Donhang";
 import ProductList from "../pages/Products/ProductList";
 import HistoryOrder from "../components/Lichsudonhang/Lichsudonhang";
 import UserManager from "../pages/Admin/UserManager";
+
 import InventoryList from "../pages/Inventory/InventoryList";
+
+import VoucherManager from "../pages/Admin/VoucherManager";
+
 const AllRouters = (
   <>
     <Route index element={<ProductList />} />
@@ -16,7 +20,11 @@ const AllRouters = (
     <Route path="orders/cancelled" element={<Donhang status="dahuy" />} />
     <Route path="HistoryOrder" element={<HistoryOrder />} />
     <Route path="user" element={<UserManager />} />
+
     <Route path="warehouse" element={<InventoryList />} />
+
+    <Route path="coupons" element={<VoucherManager />} />
+
   </>
 );
 

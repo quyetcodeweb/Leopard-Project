@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AddVoucherModal from "./AddVoucherModal";
+import EditVoucherModal from "./EditVoucherModal";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 import "./VoucherManager.css";
 
 const VoucherManager = () => {
@@ -29,91 +31,27 @@ const VoucherManager = () => {
     }
   };
 
-   //Cập nhật trạng thái voucher hết hạn (dev truong)
-  const updateVoucherStatus = async () => {
-    try {
-      const res = await axios.post("http://localhost:5000/api/vouchers/update-status");
-      const { expiredVouchers } = res.data;
-      if (expiredVouchers && expiredVouchers.length > 0) {
-        expiredVouchers.forEach((v) => alert(v.message));
-        loadVouchers(); // reload sau khi update để hiển thị trạng thái mới
-      }
-    } catch (err) {
-      console.error("updateVoucherStatus error", err);
-    }
-  };
-
   useEffect(() => {
-    updateVoucherStatus(); //dev trường
     loadVouchers();
   }, []);
 
-  // Chuẩn hóa ngày yyyy-mm-dd 
-  const normalize = (d) => d?.slice(0, 10);
+  // =====================
+  // FILTER LOGIC (ĐÃ SỬA)
+  // =====================
+  const filtered = vouchers.filter((v) => {
+    if (search && !v.Code.toLowerCase().includes(search.toLowerCase())) return false;
+    if (startDate && v.StartDate?.slice(0, 10) < startDate) return false;
+    if (endDate && v.ExpirationDate?.slice(0, 10) > endDate) return false;
 
-  // === HÀM DUY NHẤT XỬ LÝ TÌM KIẾM + LỌC ===
-  const applyVoucherSearch = () => {
-    return vouchers.filter((v) => {
-      const start = normalize(v.StartDate);
-      const end = normalize(v.ExpirationDate);
+    if (typeFilter !== "all") {
+      if (typeFilter === "percent" && v.DiscountPercent <= 0) return false;
+      if (typeFilter === "cash" && v.DiscountAmount <= 0) return false;
+    }
 
-      // =========================
-      // 1. TÌM KIẾM THEO ID + CODE
-      // =========================
-      if (search) {
-        const kw = search.toLowerCase();
+    if (statusFilter !== "all" && `${v.Status}` !== statusFilter) return false;
 
-        const matchID = v.VoucherID.toString().includes(kw);
-        const matchCode = v.Code.toLowerCase().includes(kw);
-
-        if (!matchID && !matchCode) return false;
-      }
-
-      // ================
-      // 2. NGHIỆP VỤ NGÀY
-      // ================
-
-      // ❗ ràng buộc: startDate phải <= endDate
-      if (startDate && endDate && startDate > endDate) {
-        return false;
-      }
-
-      // ✔ Chỉ chọn ngày bắt đầu → lọc từ ngày đó trở về sau
-      if (startDate && !endDate) {
-        if (start < startDate) return false;
-      }
-
-      // ✔ Chỉ chọn ngày kết thúc → lọc từ ngày đó trở về trước
-      if (!startDate && endDate) {
-        if (end > endDate) return false;
-      }
-
-      // ✔ Chọn cả 2 → lấy trong khoảng [startDate → endDate]
-      if (startDate && endDate) {
-        if (start < startDate || end > endDate) return false;
-      }
-
-      // =========================
-      // 3. LỌC THEO LOẠI GIẢM GIÁ
-      // =========================
-      if (typeFilter !== "all") {
-        const isPercent = v.DiscountPercent > 0;
-        if (typeFilter === "percent" && !isPercent) return false;
-        if (typeFilter === "cash" && isPercent) return false;
-      }
-
-      // ======================
-      // 4. LỌC THEO TRẠNG THÁI
-      // ======================
-      if (statusFilter !== "all" && `${v.Status}` !== statusFilter) {
-        return false;
-      }
-
-      return true;
-    });
-  };
-
-  const filtered = applyVoucherSearch();
+    return true;
+  });
 
   const onOpenDelete = (v) => setDeleteTarget(v);
   const onOpenEdit = (v) => setOpenEdit(v);
@@ -174,12 +112,12 @@ const VoucherManager = () => {
       <div className="filter-row">
         <div className="date-group">
           <label>Ngày bắt đầu</label>
-          <input type="date" value={startDate} onKeyDown={(e) => e.preventDefault()} onChange={(e) => setStartDate(e.target.value)} />
+          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
         </div>
 
         <div className="date-group">
           <label>Ngày kết thúc</label>
-          <input type="date" value={endDate} onKeyDown={(e) => e.preventDefault()} onChange={(e) => setEndDate(e.target.value)} />
+          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
         </div>
 
         <div className="select-group">
@@ -206,7 +144,7 @@ const VoucherManager = () => {
       <table className="voucher-table">
         <thead>
           <tr>
-            <th> </th> {/* EDIT ICON ĐẦU DÒNG */}
+            <th> </th>
             <th>STT</th>
             <th>Mã</th>
             <th>Loại</th>
@@ -214,7 +152,7 @@ const VoucherManager = () => {
             <th>Ngày bắt đầu</th>
             <th>Ngày kết thúc</th>
             <th>Trạng thái</th>
-            <th> </th> {/* DELETE ICON CUỐI DÒNG */}
+            <th> </th>
           </tr>
         </thead>
 
@@ -230,36 +168,26 @@ const VoucherManager = () => {
           ) : (
             filtered.map((v, i) => (
               <tr key={v.VoucherID}>
-
-                {/* EDIT ICON */}
-                <td className="action-cell">
-                  <button className="icon-btn" onClick={() => onOpenEdit(v)}>
-                    <svg width="20" height="20" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 20h9" />
-                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
-                    </svg>
-                  </button>
-                </td>
+                <td className="action-cell"> <button className="icon-btn" onClick={() => onOpenEdit(v)}> <svg width="20" height="20" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <path d="M12 20h9" /> <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" /> </svg> </button> </td>
 
                 <td>{i + 1}</td>
                 <td>{v.Code}</td>
+
                 <td>{v.DiscountPercent > 0 ? "%" : "VND"}</td>
-                <td>{v.DiscountPercent > 0 ? `${v.DiscountPercent}%` : v.Value ? `${v.Value}đ` : "-"}</td>
+
+                <td>
+                  {v.DiscountPercent > 0
+                    ? `${v.DiscountPercent}%`
+                    : v.DiscountAmount > 0
+                    ? `${v.DiscountAmount.toLocaleString()}đ`
+                    : "-"}
+                </td>
+
                 <td>{v.StartDate?.slice(0, 10)}</td>
                 <td>{v.ExpirationDate?.slice(0, 10)}</td>
                 <td>{getStatusText(v.Status)}</td>
 
-                {/* DELETE ICON */}
-                <td className="action-cell">
-                  <button className="icon-btn" onClick={() => onOpenDelete(v)}>
-                    <svg width="20" height="20" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6l-1 14H6L5 6m5 0V4h4v2" />
-                      <line x1="10" y1="11" x2="10" y2="17" />
-                      <line x1="14" y1="11" x2="14" y2="17" />
-                    </svg>
-                  </button>
-                </td>
+                <td className="action-cell"> <button className="icon-btn" onClick={() => onOpenDelete(v)}> <svg width="20" height="20" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <polyline points="3 6 5 6 21 6" /> <path d="M19 6l-1 14H6L5 6m5 0V4h4v2" /> <line x1="10" y1="11" x2="10" y2="17" /> <line x1="14" y1="11" x2="14" y2="17" /> </svg> </button> </td>
               </tr>
             ))
           )}
@@ -274,6 +202,22 @@ const VoucherManager = () => {
             loadVouchers();
           }}
           onSuccess={() => loadVouchers()}
+        />
+      )}
+
+      {openEdit && (
+        <EditVoucherModal
+          voucher={openEdit}
+          onClose={() => setOpenEdit(null)}
+          onSaved={loadVouchers}
+        />
+      )}
+
+      {deleteTarget && (
+        <DeleteConfirmModal
+          voucher={deleteTarget}
+          onCancel={() => setDeleteTarget(null)}
+          onConfirm={() => handleDelete(deleteTarget.VoucherID)}
         />
       )}
     </div>

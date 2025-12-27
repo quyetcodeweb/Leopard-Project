@@ -1,7 +1,16 @@
-import React, { useState } from "react";
-import "./AddVoucherModal.css";
+import React, { useState, useEffect } from "react";
+import "./AddVoucherModal.css"; // Reuse CSS
 
-const AddVoucherModal = ({ onClose }) => {
+const splitDateTime = (dt) => {
+  if (!dt) return { date: "", time: "" };
+  const [date, time] = dt.replace("T", " ").split(" ");
+  return {
+    date,
+    time: time ? time.substring(0, 5) : "",
+  };
+};
+
+const EditVoucherModal = ({ voucher, onClose, onSaved }) => {
   const [form, setForm] = useState({
     code: "",
     description: "",
@@ -17,11 +26,37 @@ const AddVoucherModal = ({ onClose }) => {
     status: "active",
   });
 
+  useEffect(() => {
+    if (!voucher) return;
+
+    const start = splitDateTime(voucher.StartDate);
+    const end = splitDateTime(voucher.ExpirationDate);
+
+    setForm({
+      code: voucher.Code || "",
+      description: voucher.Description || "",
+      type: voucher.DiscountPercent > 0 ? "%" : "VND",
+      value:
+        voucher.DiscountPercent > 0
+          ? voucher.DiscountPercent
+          : voucher.DiscountAmount || "",
+      maxValue: voucher.MaxValue || "",
+      startDate: start.date,
+      startTime: start.time,
+      endDate: end.date,
+      endTime: end.time,
+      quantity: voucher.MaxUse || "",
+      minOrder: voucher.MinOrder || "",
+      status: voucher.Status === 1 ? "active" : "inactive",
+    });
+  }, [voucher]);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async () => {
+  // ✅ CHỈ SỬA LOGIC
+  const handleUpdate = async () => {
     const startDateTime =
       form.startDate && form.startTime
         ? `${form.startDate} ${form.startTime}:00`
@@ -32,42 +67,63 @@ const AddVoucherModal = ({ onClose }) => {
         ? `${form.endDate} ${form.endTime}:00`
         : null;
 
-    const statusMap = { active: 1, inactive: 2 };
+    const statusValue = form.status === "active" ? 1 : 2;
 
+    // ✅ MAP ĐÚNG BACKEND (QUAN TRỌNG)
     const data = {
       code: form.code,
-      type: form.type,                // ⭐ THÊM
-      discountValue: form.value,      // ⭐ THÊM
+      type: form.type,
+      discountValue: Number(form.value),
       startDate: startDateTime,
       expirationDate: expirationDateTime,
-      maxUse: form.quantity,
-      status: statusMap[form.status],
+      maxUse: Number(form.quantity),
+      status: statusValue,
     };
 
-    console.log("DATA SENT:", data);
+    let result;
 
+    // ✅ CHỈ BẮT LỖI UPDATE
     try {
-      const res = await fetch("http://localhost:5000/api/vouchers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/vouchers/${voucher.VoucherID}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
 
-      const result = await res.json();
-      alert(result.message);
-      onClose();
+      if (!res.ok) {
+        throw new Error("Update failed");
+      }
+
+      result = await res.json();
     } catch (err) {
-      console.error(err);
-      alert("Lỗi khi lưu voucher");
+      console.error("Update voucher error:", err);
+      alert("Lỗi khi cập nhật voucher");
+      return;
     }
+
+    // ✅ UPDATE OK
+    alert(result.message || "Cập nhật thành công");
+
+    // ✅ reload list nhưng KHÔNG được làm fail update
+    try {
+      await onSaved();
+    } catch (e) {
+      console.warn("Reload voucher list failed", e);
+    }
+
+    onClose();
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-container">
 
+        {/* HEADER */}
         <div className="modal-header">
-          <span className="title">Thêm mã giảm giá</span>
+          <span className="title">Sửa mã giảm giá</span>
           <span className="close-btn" onClick={onClose}>X</span>
         </div>
 
@@ -136,7 +192,6 @@ const AddVoucherModal = ({ onClose }) => {
                 name="value"
                 value={form.value}
                 onChange={handleChange}
-                placeholder="Nhập số..."
               />
               <span className="unit">
                 {form.type === "%" ? "%" : "VND"}
@@ -144,22 +199,19 @@ const AddVoucherModal = ({ onClose }) => {
             </div>
 
             {form.type === "%" && (
-              <div className="form-subtext red">
-                ❗ Từ 1% đến 100%
-              </div>
-            )}
+              <>
+                <div className="form-subtext red">❗ Từ 1% đến 100%</div>
 
-
-            {form.type === "%" && (
-              <div className="row-3">
-                <label>Giảm tối đa</label>
-                <input
-                  name="maxValue"
-                  value={form.maxValue}
-                  onChange={handleChange}
-                />
-                <span className="unit">VND</span>
-              </div>
+                <div className="row-3">
+                  <label>Giảm tối đa</label>
+                  <input
+                    name="maxValue"
+                    value={form.maxValue}
+                    onChange={handleChange}
+                  />
+                  <span className="unit">VND</span>
+                </div>
+              </>
             )}
           </div>
 
@@ -222,6 +274,7 @@ const AddVoucherModal = ({ onClose }) => {
           {/* TRẠNG THÁI */}
           <div className="section">
             <div className="section-title">TRẠNG THÁI</div>
+
             <div className="radio-group">
               <label>
                 <input
@@ -250,7 +303,7 @@ const AddVoucherModal = ({ onClose }) => {
           {/* BUTTONS */}
           <div className="footer">
             <button className="cancel" onClick={onClose}>Hủy</button>
-            <button className="save" onClick={handleSave}>Lưu</button>
+            <button className="save" onClick={handleUpdate}>Cập nhật</button>
           </div>
 
         </div>
@@ -259,4 +312,4 @@ const AddVoucherModal = ({ onClose }) => {
   );
 };
 
-export default AddVoucherModal;
+export default EditVoucherModal;
