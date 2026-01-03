@@ -11,6 +11,7 @@ import sanphamRoutes from "./routes/sanpham.js";
 import authRouter from "./routes/authRoute.js";
 import userRoutes from "./routes/userRoute.js";
 import voucherRoutes from "./routes/voucherRoutes.js";
+import revenueRoutes from "./routes/revenueRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -26,6 +27,7 @@ app.use("/api/sanpham", sanphamRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRoutes);
 app.use("/api/vouchers", voucherRoutes);
+app.use("/api/revenue", revenueRoutes);
 app.get("/", (req, res) => {
   res.send("🚀 LeopardProject API đang hoạt động!");
 });
