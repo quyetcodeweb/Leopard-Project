@@ -7,7 +7,7 @@ const Topbar = ({ darkMode = false }) => {
   const location = useLocation();
 
   const routeTitles = {
-    "/": "Trang chủ",
+    "/": "Tổng quan",
     "/dashboard": "Dashboard",
     "/products": "Sản phẩm",
     "/products/add": "Thêm sản phẩm",
@@ -21,7 +21,7 @@ const Topbar = ({ darkMode = false }) => {
     "/warehouse": "Kho hàng",
   };
 
-  const title = routeTitles[location.pathname] || "Trang";
+  const title = routeTitles[location.pathname] || "Mã giảm giá";
 
   return (
     <header className={`topbar ${darkMode ? "dark" : ""}`}>

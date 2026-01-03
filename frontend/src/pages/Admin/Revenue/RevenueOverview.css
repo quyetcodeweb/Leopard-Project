@@ -1,0 +1,80 @@
+.revenue-page {
+  background: #f5f6fa;
+  padding: 24px;
+}
+
+/* FILTER */
+.revenue-header {
+  margin-bottom: 20px;
+}
+
+.revenue-filter.inline {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 14px;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.revenue-filter input {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.btn-primary {
+  height: 36px;
+  padding: 0 16px;
+  background: #1677ff;
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-reset {
+  height: 36px;
+  padding: 0 16px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.error-text {
+  color: red;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+/* CARD */
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.chart-full {
+  margin-top: 16px;
+  height: 480px;
+}
+
+.row-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
