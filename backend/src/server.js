@@ -14,6 +14,7 @@ import ordersRoutes from "./routes/orders.js";
 import sanphamRoutes from "./routes/sanpham.js";
 import authRouter from "./routes/authRoute.js";
 import userRoutes from "./routes/userRoute.js";
+import customerRoutes from "./routes/customerRoute.js";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use("/api/orders", ordersRoutes);
 app.use("/api/sanpham", sanphamRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRoutes);
+app.use("/api/customers", customerRoutes);
 
 // --- API Quên mật khẩu & OTP ---
 
