@@ -16,6 +16,8 @@ import authRouter from "./routes/authRoute.js";
 import userRoutes from "./routes/userRoute.js";
 import customerRoutes from "./routes/customerRoute.js";
 
+import notificationRoutes from "./routes/notification.js";
+import voucherRoutes from "./routes/voucherRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -134,6 +136,8 @@ app.post('/api/auth/reset-password', async (req, res) => {
     }
 });
 
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/vouchers", voucherRoutes);
 app.get("/", (req, res) => {
   res.send("🚀 LeopardProject API đang hoạt động!");
 });

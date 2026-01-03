@@ -85,8 +85,6 @@ const VoucherManager = () => {
 
   return (
     <div className="voucher-container">
-      <h2 className="voucher-title">Quản lý mã giảm giá</h2>
-
       {/* HÀNG TRÊN: TÌM KIẾM + BUTTON */}
       <div className="top-row">
         <div className="top-left">
