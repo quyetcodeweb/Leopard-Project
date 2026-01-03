@@ -33,7 +33,7 @@ const AllRouters = () => {
       <Route path="warehouse" element={<InventoryList />} />
 
       {/* ===== ĐƠN HÀNG ===== */}
-      <Route path="history-order" element={<HistoryOrder />} />
+      <Route path="HistoryOrder" element={<HistoryOrder />} />
       <Route path="orders/received" element={<Donhang status="daxuly" />} />
       <Route path="orders/processing" element={<Donhang status="dangxuly" />} />
       <Route path="orders/delivered" element={<Donhang status="danggiao" />} />
