@@ -32,7 +32,7 @@ const Topbar = ({ darkMode = false }) => {
 
       <div className="topbar-right">
         <FaBell
-          className="bell"
+          className="bell" 
           style={{ cursor: "pointer" }}
           onClick={() => setShowTB(!showTB)}
         />
@@ -44,3 +44,4 @@ const Topbar = ({ darkMode = false }) => {
 };
 
 export default Topbar;
+
