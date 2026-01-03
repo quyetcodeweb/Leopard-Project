@@ -10,7 +10,7 @@ const Topbar = ({ darkMode = false }) => {
   const userId = localStorage.getItem("userId");
 
   const routeTitles = {
-    "/": "Trang chủ",
+    "/": "Tổng quan",
     "/dashboard": "Dashboard",
     "/products": "Sản phẩm",
     "/products/add": "Thêm sản phẩm",
@@ -25,7 +25,7 @@ const Topbar = ({ darkMode = false }) => {
     "/coupons": "Mã giảm giá",
   };
 
-  const title = routeTitles[location.pathname] || "Trang";
+  const title = routeTitles[location.pathname] || "Mã giảm giá";
 
   return (
     <header className={`topbar ${darkMode ? "dark" : ""}`}>

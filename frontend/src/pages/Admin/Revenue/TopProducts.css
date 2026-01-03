@@ -1,0 +1,84 @@
+.top-products {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Header */
+.top-header {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Thanh ngang phân cách */
+.divider {
+  height: 1px;
+  background: #e5e7eb; /* xám nhạt giống line chart */
+  margin-bottom: 8px;
+}
+
+/* Item */
+.product-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.product-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #f2f2f2;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-name {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Status */
+.status {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  color: white;
+}
+
+.status.in-stock {
+  background: #22c55e;
+}
+
+.status.out-stock {
+  background: #ef4444;
+}
+
+/* Link */
+.view {
+  font-size: 12px;
+  color: #3b82f6;
+  cursor: pointer;
+}
+
+.divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin-bottom: 8px;
+}
