@@ -52,31 +52,57 @@ app.use("/api/customers", customerRoutes);
 
 // 1. API Gửi OTP
 app.post('/api/auth/forgot-password', (req, res) => {
+    console.log("👉 HIT forgot-password");
+    console.log("👉 BODY:", req.body);
+
     const { email } = req.body;
+
+    if (!email) {
+        console.log("❌ EMAIL UNDEFINED");
+        return res.status(400).json({ message: "Thiếu email" });
+    }
+
     db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
-        if (err) return res.status(500).json({ message: 'Lỗi truy vấn!' });
-        if (results.length === 0) return res.status(404).json({ message: 'Email không tồn tại!' });
+        if (err) {
+            console.error("❌ DB SELECT ERROR:", err);
+            return res.status(500).json({ message: 'DB select error' });
+        }
+
+        if (results.length === 0) {
+            console.log("❌ EMAIL NOT FOUND");
+            return res.status(404).json({ message: 'Email không tồn tại!' });
+        }
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        const expiresAt = new Date(Date.now() + 5 * 60000); // 5 phút
+        const expiresAt = new Date(Date.now() + 5 * 60000);
 
-        db.query('INSERT INTO password_resets (email, otp_code, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE otp_code=?, expires_at=?', 
-        [email, otp, expiresAt, otp, expiresAt], (err) => {
-            if (err) return res.status(500).json({ message: 'Lỗi lưu OTP vào DB' });
-
-            transporter.sendMail({
-                from: `"LeopardProject Support" <${process.env.EMAIL_USER}>`,
-                to: email,
-                subject: '[SMS] Mã xác thực đổi mật khẩu',
-                text: `Mã OTP của bạn là: ${otp}. Mã này có hiệu lực trong 5 phút.`
-            }, (error) => {
-                if (error) {
-                    console.log(error);
-                    return res.status(500).json({ message: 'Lỗi gửi mail' });
+        db.query(
+            `INSERT INTO password_resets (email, otp_code, expires_at)
+             VALUES (?, ?, ?)
+             ON DUPLICATE KEY UPDATE otp_code=?, expires_at=?`,
+            [email, otp, expiresAt, otp, expiresAt],
+            (err) => {
+                if (err) {
+                    console.error("❌ DB INSERT OTP ERROR:", err);
+                    return res.status(500).json({ message: 'DB insert OTP error' });
                 }
-                res.json({ message: 'Mã OTP đã được gửi đến email của bạn.' });
-            });
-        });
+
+                transporter.sendMail({
+                    from: `"Leopard Support" <${process.env.EMAIL_USER}>`,
+                    to: email,
+                    subject: 'Mã OTP đặt lại mật khẩu',
+                    text: `Mã OTP của bạn là ${otp}`
+                }, (error) => {
+                    if (error) {
+                        console.error("❌ MAIL ERROR:", error);
+                        return res.status(500).json({ message: 'Mail error' });
+                    }
+
+                    console.log("✅ OTP SENT");
+                    res.json({ message: 'Đã gửi OTP qua email' });
+                });
+            }
+        );
     });
 });
 
