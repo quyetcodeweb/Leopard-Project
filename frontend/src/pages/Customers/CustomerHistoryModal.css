@@ -1,0 +1,144 @@
+.history-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+
+.history-modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 750px;
+    max-width: 95%;
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.history-modal-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-close-x {
+    border: none;
+    background: #ff0000;
+    font-size: 28px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.history-modal-body {
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th {
+    background-color: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+}
+
+.history-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.amount {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Badge trạng thái */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-completed { background-color: #09ff00; color: #ffffff; }
+.status-pending { background-color: #e5ff00; color: #ffffff; }
+.status-other { background-color: #ffffff; color: #000000; }
+.status-cancelled { background-color: #ff0000; color: #ffffff; }
+
+.history-modal-footer {
+    padding: 15px 24px;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+
+.btn-close-footer {
+    padding: 8px 24px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background: rgb(255, 0, 0);
+    transition: all 0.2s;
+}
+
+.btn-close-footer:hover { background: #f5f5f5; border-color: #bbb; }
+
+.loading-spinner, .no-data-msg {
+    text-align: center;
+    padding: 50px 0;
+    color: #888;
+}
+
+.history-modal-footer {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 10px;                
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+}
+
+/* Style cho nút Quay lại mới ở footer */
+.btn-back-footer {
+    padding: 8px 16px;
+    background-color: #f0f2f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-back-footer:hover {
+    background-color: #e4e6e9;
+    border-color: #ccc;
+}
+
+/* Style nút Đóng (giữ nguyên hoặc tùy chỉnh thêm) */
+.btn-close-footer {
+    padding: 8px 20px;
+    background-color: #dc3545; 
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-view-detail {
+    padding: 8px 20px;
+    background-color: #004cf1; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
