@@ -1,10 +1,13 @@
-import React from "react";
+import React, {useState} from "react";
 import "./Topbar.css";
 import { FaBell } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
+import BellThongBao from "../Thongbao/BellThongBao";
 
 const Topbar = ({ darkMode = false }) => {
   const location = useLocation();
+  const [showTB, setShowTB] = useState(false);
+  const userId = localStorage.getItem("userId");
 
   const routeTitles = {
     "/": "Tổng quan",
@@ -19,6 +22,7 @@ const Topbar = ({ darkMode = false }) => {
     "/orders/received": "Đơn hàng",
     "/orders/delivered": "Đơn hàng",
     "/warehouse": "Kho hàng",
+    "/coupons": "Mã giảm giá",
   };
 
   const title = routeTitles[location.pathname] || "Mã giảm giá";
@@ -28,8 +32,14 @@ const Topbar = ({ darkMode = false }) => {
       <div className="page-title">{title}</div>
 
       <div className="topbar-right">
-        <FaBell className="bell" />
+        <FaBell
+          className="bell"
+          style={{ cursor: "pointer" }}
+          onClick={() => setShowTB(!showTB)}
+        />
       </div>
+
+      {showTB && <BellThongBao userId={userId} onClose={() => setShowTB(false)} />}
     </header>
   );
 };

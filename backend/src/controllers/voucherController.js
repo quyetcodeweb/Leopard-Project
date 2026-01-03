@@ -112,7 +112,7 @@ export const addVoucher = (req, res) => {
       toSQLDateTime(startDate),
       toSQLDateTime(expirationDate),
       Number(maxUse ?? 1),
-      Number(status)
+      status !== undefined ? Number(status) : 1
     ],
     (err) => {
       if (err) {

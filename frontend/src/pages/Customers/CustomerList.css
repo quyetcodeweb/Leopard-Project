@@ -1,0 +1,220 @@
+.customer-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.customer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-add {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-export {
+    background-color: #0044ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-next {
+    background-color: #d4f51a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.filter-section {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.customer-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.customer-table th, .customer-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.customer-table th {
+    background-color: #f1f3f5;
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Badge màu sắc cho Nhãn (U10.7) */
+.badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.label-vip { background: #fff3cd; color: #856404; }
+.label-khách-thân-thiết { background: #d1ecf1; color: #0c5460; }
+.label-khách-mới { background: #e2e3e5; color: #383d41; }
+
+/* Trạng thái (U10.4) */
+.status-dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+.active { background-color: #28a745; }
+.inactive { background-color: #dc3545; }
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-icon {
+    background: none;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.btn-icon:hover {
+    background-color: #f1f3f5;
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Container cho các nút trong cột thao tác */
+.actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    border: none !important;
+}
+
+/* Style chung cho nút bấm */
+.btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+/* Hiệu ứng Hover chung */
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(27, 160, 201, 0.1);
+}
+
+/* Màu sắc riêng biệt cho từng loại icon */
+.btn-view { color: #1890ff; }
+.btn-view:hover { background: #e6f7ff; border-color: #91d5ff; }
+
+.btn-edit { color: #faad14; }
+.btn-edit:hover { background: #fffbe6; border-color: #ffe58f; }
+
+.btn-history { color: #722ed1; }
+.btn-history:hover { background: #f9f0ff; border-color: #d3adf7; }
+
+.btn-active { color: #52c41a; }
+.btn-active:hover { background: #f6ffed; border-color: #b7eb8f; }
+
+.btn-disable { color: #ff4d4f; }
+.btn-disable:hover { background: #fff1f0; border-color: #ffa39e; }
+
+.btn-delete { color: #ff4d4f; }
+.btn-delete:hover { background: #ff4d4f; color: #fff; }
+
+/* Nút Trạng thái đang Hoạt động (Dấu tích xanh lá) */
+.btn-status-active {
+    color: #28a745 !important; /* Màu xanh lá đặc trưng */
+    background-color: #f6ffed;
+    border-color: #b7eb8f;
+}
+
+.btn-status-active:hover {
+    background-color: #28a745;
+    color: white !important;
+}
+
+/* Nút Trạng thái đang Vô hiệu hóa (Biển báo đỏ) */
+.btn-status-disabled {
+    color: #ff4d4f !important; /* Màu đỏ cảnh báo */
+    background-color: #fff1f0;
+    border-color: #ffa39e;
+}
+
+.btn-status-disabled:hover {
+    background-color: #ff4d4f;
+    color: white !important;
+}
+
+/* Đảm bảo các icon khác (xem, sửa, lịch sử) vẫn giữ màu chuyên nghiệp */
+.btn-view { color: #1890ff; }
+.btn-edit { color: #faad14; }
+.btn-history { color: #722ed1; }
+.btn-delete { color: #ff4d4f; }
+
+/* Style cho Badge Nhãn */
+.label-badge {
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+/* Màu sắc cụ thể cho từng loại nhãn */
+.label-vip { background-color: #ffd700; color: #000; } /* Vàng */
+.label-khách-thân-thiết { background-color: #007bff; color: #fff; } /* Xanh dương */
+.label-tiềm-năng { background-color: #28a745; color: #fff; } /* Xanh lá */
+.label-khách-mới { background-color: #17a2b8; color: #fff; } /* Xanh teal */
+.label-khách-lẻ { background-color: #6c757d; color: #fff; } /* Xám */
+
+/* Style cho select lọc */
+.filter-select:focus {
+    border-color: #007bff;
+    outline: none;
+}

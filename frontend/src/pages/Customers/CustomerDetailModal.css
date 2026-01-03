@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.detail-modal {
+    width: 580px;
+    background-color: #ffffff;
+    border-radius: 20px; /* Bo góc lớn hiện đại */
+    box-shadow: 
+        0 10px 25px -5px rgba(0, 0, 0, 0.1),
+        0 8px 10px -6px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.05); /* Viền mờ bao quanh */
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Header: Gradient nhẹ nhàng và sang trọng */
+.modal-header {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    padding: 20px 28px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.close-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.close-btn:hover { 
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+/* Thân modal */
+.modal-body {
+    padding: 32px;
+}
+
+.info-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    padding: 12px 0;
+    border-bottom: 1px solid #f8fafc; 
+}
+
+.info-row:last-child { border-bottom: none; }
+
+.info-row label {
+    font-weight: 600;
+    color: #64748b; 
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-row span {
+    color: #1e293b;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* Badge Trạng thái */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 99px; 
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+}
+
+.status-badge.active {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.status-badge.disabled {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Ghi chú nội bộ - Làm dạng Card riêng biệt */
+.internal-notes-container {
+    margin-top: 24px;
+    background: #fffcf0;
+    border: 1px solid #fef3c7;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.notes-title {
+    color: #9a3412;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.note-input-box textarea {
+    width: 100%;
+    height: 80px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    resize: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.note-input-box textarea:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.btn-submit-note {
+    margin-top: 12px;
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-submit-note:hover {
+    background: #059669;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* Note Card Item */
+.note-card {
+    background: white;
+    border: 1px solid #f1f5f9;
+    padding: 14px;
+    border-radius: 10px;
+    margin-top: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 6px;
+}
+
+/* Footer */
+.modal-footer {
+    padding: 20px 32px 32px;
+    background-color: #f8fafc;
+    text-align: right;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-close-modal {
+    padding: 10px 28px;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #475569;
+    transition: all 0.2s;
+}
+
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

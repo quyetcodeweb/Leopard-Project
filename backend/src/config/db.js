@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "quocthang__2004",
+  password: "26052004",
   database: "SalesManagementDB",
 });
 
