@@ -1,0 +1,169 @@
+/* ========= OVERLAY ========= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  z-index: 9999;
+}
+
+/* ========= MODAL ========= */
+.modal-container {
+  width: 740px;
+  max-width: 95%;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 35px rgba(0,0,0,0.2);
+  padding: 0 32px 32px 32px;
+  font-family: "Inter", sans-serif;
+
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.modal-container::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-container::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 3px;
+}
+
+/* ========= HEADER (GIỐNG FIGMA) ========= */
+.modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  background: #2F85FF;
+  padding: 16px 22px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 10px 10px 0 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 0 -32px 25px -32px;
+}
+
+.close-btn {
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* ========= SECTION TITLE ========= */
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* ========= BOX STYLE (GIỐNG HỆ THỐNG FIGMA) ========= */
+.section {
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  padding: 18px 20px;
+  border-radius: 8px;
+  margin-bottom: 22px;
+}
+
+/* ========= GRID ROW ========= */
+.row-2,
+.row-3 {
+  display: grid;
+  align-items: start; /* FIX QUAN TRỌNG */
+  column-gap: 12px;
+  margin-bottom: 16px;
+}
+
+.row-2 {
+  grid-template-columns: 165px 1fr;
+}
+
+.row-3 {
+  grid-template-columns: 165px 1fr 90px;
+}
+
+.row-2 input,
+.row-3 input {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
+}
+
+.row-2 label,
+.row-3 label {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Fix một số trường hợp box bị phủ */
+.box {
+  position: relative;
+  z-index: 1;
+}
+
+.unit {
+  font-size: 14px;
+  margin-left: 6px;
+  color: #444;
+}
+
+/* ========= RADIO ========= */
+.radio-group {
+  display: flex;
+  gap: 45px;
+  margin-bottom: 18px;
+}
+
+.radio-group label {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ========= WARNING ========= */
+.form-subtext {
+  font-size: 12px;
+  color: #777;
+  margin-left: 165px;
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+
+.form-subtext.red {
+  color: #E5484D;
+}
+
+/* ========= FOOTER ========= */
+.footer {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 32px;
+}
+
+.cancel,
+.save {
+  padding: 10px 40px;
+  border-radius: 6px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  color: white;
+}
+
+.cancel { background: #FF6B6B; }
+.cancel:hover { background: #E45757; }
+
+.save { background: #2F85FF; }
+.save:hover { background: #1E6DE0; }

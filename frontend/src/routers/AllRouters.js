@@ -6,6 +6,7 @@ import Donhang from "../components/Donhang/Donhang";
 import ProductList from "../pages/Products/ProductList";
 import HistoryOrder from "../components/Lichsudonhang/Lichsudonhang";
 import UserManager from "../pages/Admin/UserManager";
+
 import InventoryList from "../pages/Inventory/InventoryList";
 import CustomerList from "../pages/Customers/CustomerList";
 
@@ -20,6 +21,7 @@ const AllRouters = () => (
     <Route path="orders/delivered" element={<Donhang status="danggiao" />} />
     <Route path="orders/cancelled" element={<Donhang status="dahuy" />} />
     <Route path="user" element={<UserManager />} />
+
     <Route path="warehouse" element={<InventoryList />} />
 
     <Route element={<ProtectedAdminRoute allowedRoles={["admin", "manager", "staff"]} />}>
