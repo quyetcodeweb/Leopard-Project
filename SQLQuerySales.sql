@@ -237,6 +237,19 @@ CREATE TABLE users (
 
 INSERT INTO users VALUES (1,'admin_user','admin@gmail.com','$2b$10$iM8D2.wB/G8P9ZzYw2jEjeq5vF3t2dF3x/E9G4t8','admin','2025-11-13 06:41:31'),(3,'thang1','le7283140@gmail.com','Quocthang__2004','manager','2025-11-13 12:24:43'),(10,'thangcui','ssddsd2@gmail.com','Quocthang__2004','customer','2025-11-15 08:24:55');
 
+ALTER TABLE Voucher
+ADD COLUMN StartDate DATETIME NULL AFTER DiscountPercent;
+SET SQL_SAFE_UPDATES = 0;
+UPDATE Voucher
+SET StartDate = DATE_SUB(ExpirationDate, INTERVAL 30 DAY)
+WHERE StartDate IS NULL;
+ALTER TABLE Voucher
+MODIFY COLUMN StartDate DATETIME NOT NULL;
+ALTER TABLE Voucher
+ADD COLUMN Status TINYINT DEFAULT 1 AFTER UsedCount;
+ALTER TABLE Voucher
+ADD COLUMN DiscountAmount DECIMAL(12,2) DEFAULT 0 AFTER DiscountPercent;
+
 CREATE TABLE password_resets (
     email VARCHAR(100) PRIMARY KEY,
     otp_code VARCHAR(6) NOT NULL,
@@ -244,14 +257,33 @@ CREATE TABLE password_resets (
     FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-ALTER TABLE Customer ADD COLUMN Label VARCHAR(50) DEFAULT 'Khách mới';
-ALTER TABLE Customer ADD COLUMN Status VARCHAR(50) DEFAULT 'Hoạt động';
-
-CREATE TABLE CustomerNote (
-    NoteID INT AUTO_INCREMENT PRIMARY KEY,
-    CustomerID INT NOT NULL,
+-- Bảng thông báo
+CREATE TABLE Notification (
+    NotificationID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,                         -- Liên kết với người dùng
+    Type ENUM('success', 'warning', 'info') NOT NULL DEFAULT 'info',
+    Title VARCHAR(255) NOT NULL,
     Content TEXT NOT NULL,
-    Author VARCHAR(100) DEFAULT 'Nhân viên',
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (CustomerID) REFERENCES customer(CustomerID) ON DELETE CASCADE
+    IsRead BIT DEFAULT 0,                        -- 0 = chưa đọc, 1 = đã đọc
+    CreatedAt DATETIME DEFAULT NOW(),           -- Thời gian tạo thông báo
+    FOREIGN KEY (UserID) REFERENCES users(user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE audit_logs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NULL,
+    username VARCHAR(100),
+    role VARCHAR(50),
+
+    action VARCHAR(50),        -- CREATE, UPDATE, DELETE, LOGIN, LOGOUT
+    entity VARCHAR(100),       -- product, order, customer
+    entity_id BIGINT NULL,
+
+    old_value JSON NULL,
+    new_value JSON NULL,
+
+    ip_address VARCHAR(45),
+    user_agent VARCHAR(255),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
