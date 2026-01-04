@@ -1,4 +1,5 @@
 import db from "../config/db.js";
+import { createAuditLog } from "../services/auditLog.service.js";
 
 // === BCRYPT GIẢ ===
 const bcrypt = { 
@@ -12,6 +13,7 @@ const jwt = {
 };
 
 const JWT_SECRET = process.env.JWT_SECRET || "DEFAULT_SECRET";
+
 
 // ===============================
 // 📌 API ĐĂNG KÝ
@@ -56,11 +58,24 @@ export const registerUser = (req, res) => {
       db.query(
         "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)",
         [username, email, passwordHash, "customer"],
-        (err2) => {
+        (err2, result) => {
           if (err2) {
             console.error(err2);
             return res.status(500).json({ success: false, message: "Lỗi máy chủ." });
           }
+
+          // ✅ GHI LOG ĐĂNG KÝ
+          createAuditLog({
+            userId: result.insertId,
+            username,
+            role: "customer",
+            action: "REGISTER",
+            entity: "user",
+            entityId: result.insertId,
+            oldValue: null,
+            newValue: { username, email, role: "customer" },
+            req
+          });
 
           return res.status(201).json({
             success: true,
@@ -71,6 +86,7 @@ export const registerUser = (req, res) => {
     }
   );
 };
+
 
 // ===============================
 // 📌 API ĐĂNG NHẬP
@@ -96,7 +112,20 @@ export const loginUser = (req, res) => {
 
       const user = results[0];
 
+      // ❌ LOGIN FAIL (không tồn tại user)
       if (!user) {
+        createAuditLog({
+          userId: null,
+          username,
+          role: null,
+          action: "LOGIN_FAIL",
+          entity: "auth",
+          entityId: null,
+          oldValue: null,
+          newValue: { username },
+          req
+        });
+
         return res.status(401).json({
           success: false,
           message: "Tên đăng nhập hoặc mật khẩu không đúng."
@@ -105,7 +134,20 @@ export const loginUser = (req, res) => {
 
       const isMatch = bcrypt.compare(password, user.password_hash);
 
+      // ❌ LOGIN FAIL (sai mật khẩu)
       if (!isMatch) {
+        createAuditLog({
+          userId: user.user_id,
+          username: user.username,
+          role: user.role,
+          action: "LOGIN_FAIL",
+          entity: "auth",
+          entityId: user.user_id,
+          oldValue: null,
+          newValue: null,
+          req
+        });
+
         return res.status(401).json({
           success: false,
           message: "Tên đăng nhập hoặc mật khẩu không đúng."
@@ -117,6 +159,19 @@ export const loginUser = (req, res) => {
         JWT_SECRET,
         { expiresIn: "1h" }
       );
+
+      // ✅ LOGIN SUCCESS
+      createAuditLog({
+        userId: user.user_id,
+        username: user.username,
+        role: user.role,
+        action: "LOGIN",
+        entity: "auth",
+        entityId: user.user_id,
+        oldValue: null,
+        newValue: null,
+        req
+      });
 
       return res.status(200).json({
         success: true,
