@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink,useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import { FiLogOut } from "react-icons/fi";
 import {
@@ -15,15 +15,38 @@ import {
 
 const Sidebar = ({ darkMode, toggleDarkMode }) => {
   const [openOrder, setOpenOrder] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const toggleOrderMenu = () => {
     setOpenOrder(!openOrder);
   };
-const handleLogout = () => {
-  console.log("Logging out...");
-  navigate("/login");
-};
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  const handleChangeAvatar = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const updatedUser = { ...user, avatar: reader.result };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    };
+    reader.readAsDataURL(file);
+  };
 
   return (
     <aside className={`sidebar ${darkMode ? "dark" : ""}`}>
@@ -33,17 +56,23 @@ const handleLogout = () => {
       </div>
 
       {/* USER INFO */}
-      <div className="user-block">
-        <img
-          src="/images/default-avatar.png"
-          alt="avatar"
-          className="sidebar-avatar"
-        />
-        <div className="user-info">
-          <div className="user-name">Umi</div>
-          <div className="user-role">Admin</div>
+      {user && (
+        <div className="user-block">
+          <label className="avatar-wrapper">
+            <img
+              src={user.avatar || "/images/mi_goi.png"}
+              alt="avatar"
+              className="sidebar-avatar"
+            />
+            <input type="file" hidden accept="image/*" onChange={handleChangeAvatar} />
+          </label>
+
+          <div className="user-info">
+            <div className="user-name">{user.username}</div>
+            <div className="user-role">{user.role}</div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* MENU */}
       <div className="sidebar-section">
@@ -64,31 +93,20 @@ const handleLogout = () => {
               <FaTags /> <span>Mã giảm giá</span>
             </NavLink>
           </li>
+
           <li>
-            <a 
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleOrderMenu();
-              }}
-            >
+            <a href="#" onClick={(e) => { e.preventDefault(); toggleOrderMenu(); }}>
               <FaClipboardList /> <span>Đơn hàng</span>
             </a>
           </li>
+
           <div className={`dropdown-list ${openOrder ? "show" : ""}`}>
-            <li>
-              <NavLink to="/orders/received">Đã tiếp nhận</NavLink>
-            </li>
-            <li>
-              <NavLink to="/orders/processing">Đang xử lý</NavLink>
-            </li>
-            <li>
-              <NavLink to="/orders/delivered">Đã giao</NavLink>
-            </li>
-            <li>
-              <NavLink to="/orders/cancelled">Đã hủy</NavLink>
-            </li>
+            <li><NavLink to="/orders/received">Đã tiếp nhận</NavLink></li>
+            <li><NavLink to="/orders/processing">Đang xử lý</NavLink></li>
+            <li><NavLink to="/orders/delivered">Đã giao</NavLink></li>
+            <li><NavLink to="/orders/cancelled">Đã hủy</NavLink></li>
           </div>
+
           <li>
             <NavLink to="/products">
               <FaBox /> <span>Sản phẩm</span>
@@ -99,48 +117,49 @@ const handleLogout = () => {
               <FaWarehouse /> <span>Kho hàng</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/stats">
-              <FaChartBar /> <span>Thống kê</span>
-            </NavLink>
-          </li>
         </ul>
       </div>
 
-      <div className="sidebar-section">
-        <h4>Admin</h4>
-        <ul>
-          <li>
-            <NavLink to="/user">
-              <FaUserCog /> <span>Người dùng</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/HistoryControl">
-              <FaHistory /> <span>Lịch sử thao tác</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/HistoryOrder">
-              <FaHistory /> <span>Lịch sử đơn hàng</span>
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-<div className="sidebar-footer">
-      {/* DARK MODE */}
-      <div className="darkmode">
-        <label>Chế độ tối</label>
-        <div className={`toggle-switch ${darkMode ? "active" : ""}`} onClick={toggleDarkMode}>
-          <div className="switch-circle"></div>
+      {/* ADMIN */}
+      {user?.role === "admin" && (
+        <div className="sidebar-section">
+          <h4>Admin</h4>
+          <ul>
+            <li>
+              <NavLink to="/user">
+                <FaUserCog /> <span>Người dùng</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/HistoryControl">
+                <FaHistory /> <span>Lịch sử thao tác</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/HistoryOrder">
+                <FaHistory /> <span>Lịch sử đơn hàng</span>
+              </NavLink>
+            </li>
+          </ul>
         </div>
-      </div>
+      )}
 
-      {/* LOGOUT BUTTON - NEW DESIGN */}
-      <button className="logout-btn" onClick={handleLogout}>
-        <FiLogOut className="logout-icon" />
-        Đăng xuất
-      </button>
+      {/* FOOTER */}
+      <div className="sidebar-footer">
+        <div className="darkmode">
+          <label>Chế độ tối</label>
+          <div
+            className={`toggle-switch ${darkMode ? "active" : ""}`}
+            onClick={toggleDarkMode}
+          >
+            <div className="switch-circle"></div>
+          </div>
+        </div>
+
+        <button className="logout-btn" onClick={handleLogout}>
+          <FiLogOut className="logout-icon" />
+          Đăng xuất
+        </button>
       </div>
     </aside>
   );

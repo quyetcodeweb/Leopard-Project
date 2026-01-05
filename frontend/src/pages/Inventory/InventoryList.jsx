@@ -9,6 +9,8 @@ import WarningPopup from "../../components/Popups/WarningPopup";
 
 const API_URL = "http://localhost:5000/api/products";
 const CATEGORY_URL = "http://localhost:5000/api/category";
+const WARNING_COOLDOWN = 5 * 60 * 1000; // 5 phút
+const WARNING_KEY = "inventory_warning_last_seen";
 
 const InventoryList = () => {
   const [products, setProducts] = useState([]);
@@ -24,40 +26,47 @@ const InventoryList = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showImportPopup, setShowImportPopup] = useState(false);
 
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
   }, []);
 
   const fetchProducts = async () => {
-    try {
-        const res = await axios.get(API_URL);
-        setProducts(res.data);
+  try {
+    const res = await axios.get(API_URL);
+    setProducts(res.data);
 
-        // Kiểm tra cảnh báo
-        const lowStockItems = res.data.filter(
-        (p) => p.Stock <= p.WarningStock
-        );
+    const lowStockItems = res.data.filter(
+      (p) => p.Stock <= p.WarningStock
+    );
 
-        if (lowStockItems.length > 0) {
+    if (lowStockItems.length > 0) {
+      const lastSeen = localStorage.getItem(WARNING_KEY);
+      const now = Date.now();
+
+      if (!lastSeen || now - Number(lastSeen) > WARNING_COOLDOWN) {
         setWarnings(
-            lowStockItems.map((p) => ({
+          lowStockItems.map((p) => ({
             id: p.ProductID,
             name: p.ProductName,
             stock: p.Stock,
-            }))
+          }))
         );
         setShowWarningPopup(true);
-        }
-
-    } catch (err) {
-        console.error("Lỗi tải sản phẩm:", err);
+      }
     }
-    };
-    const handleMarkSeen = () => {
-    setShowWarningPopup(false);
-    setWarnings([]);
-    };
+
+  } catch (err) {
+    console.error("Lỗi tải sản phẩm:", err);
+  }
+};
+const handleMarkSeen = () => {
+  localStorage.setItem(WARNING_KEY, Date.now().toString());
+  setShowWarningPopup(false);
+  setWarnings([]);
+};
+
 
   const fetchCategories = async () => {
     try {
