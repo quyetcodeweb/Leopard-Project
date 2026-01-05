@@ -32,6 +32,7 @@ const AllRouters = () => {
       <Route path="products" element={<ProductList />} />
       <Route path="warehouse" element={<InventoryList />} />
       <Route path="HistoryControl" element={<ActivityLog />} />
+      <Route path="revenues" element={<RevenueOverview />} />
       {/* ===== ĐƠN HÀNG ===== */}
       <Route path="HistoryOrder" element={<HistoryOrder />} />
       <Route path="orders/received" element={<Donhang status="daxuly" />} />

@@ -79,7 +79,7 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
         <h4>Chung</h4>
         <ul>
           <li>
-            <NavLink to="/" end>
+            <NavLink to="/revenues">
               <FaChartBar /> <span>Tổng quan</span>
             </NavLink>
           </li>
