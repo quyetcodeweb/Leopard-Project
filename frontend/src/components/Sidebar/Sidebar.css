@@ -54,6 +54,13 @@
   border-radius: 50%;
   object-fit: cover;
 }
+.avatar-wrapper {
+  cursor: pointer;
+}
+
+.avatar-wrapper:hover {
+  opacity: 0.85;
+}
 
 .user-info {
   display: flex;

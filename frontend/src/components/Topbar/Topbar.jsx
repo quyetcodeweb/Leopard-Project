@@ -10,7 +10,7 @@ const Topbar = ({ darkMode = false }) => {
   const userId = localStorage.getItem("userId");
 
   const routeTitles = {
-    "/": "Tổng quan",
+    "/revenues": "Tổng quan",
     "/dashboard": "Dashboard",
     "/products": "Sản phẩm",
     "/products/add": "Thêm sản phẩm",
