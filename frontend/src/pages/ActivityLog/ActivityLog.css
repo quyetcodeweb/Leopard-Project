@@ -1,0 +1,84 @@
+.activity-page {
+  background: #f7f8fa;
+  padding: 24px;
+  border-radius: 16px;
+}
+
+.activity-toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.activity-toolbar input,
+.activity-toolbar select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.btn-filter {
+  background: #0b63d6;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.auto-clean-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.btn-clean {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.activity-table {
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+}
+
+.activity-table th,
+.activity-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.log-desc {
+  text-align: left;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.badge.create { background: #28a745; color: white; }
+.badge.update { background: #f0ad4e; color: white; }
+.badge.delete { background: #dc3545; color: white; }
+.badge.login  { background: #6f42c1; color: white; }
+
+.empty-text {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+.pagination {
+  margin-top: 12px;
+  text-align: right;
+}

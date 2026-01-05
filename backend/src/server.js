@@ -15,12 +15,14 @@ import sanphamRoutes from "./routes/sanpham.js";
 import authRouter from "./routes/authRoute.js";
 import userRoutes from "./routes/userRoute.js";
 import customerRoutes from "./routes/customerRoute.js";
-
+import auditLogRoutes from "./routes/auditLog.routes.js";
 import notificationRoutes from "./routes/notification.js";
 import voucherRoutes from "./routes/voucherRoutes.js";
 import revenueRoutes from "./routes/revenueRoutes.js";
-dotenv.config();
+import { startAuditLogCleanupJob } from "./jobs/auditLogCleanup.job.js";
 
+dotenv.config();
+startAuditLogCleanupJob();
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" })); 
@@ -50,6 +52,7 @@ app.use("/api/sanpham", sanphamRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRoutes);
 app.use("/api/customers", customerRoutes);
+app.use("/api/audit-logs", auditLogRoutes);
 
 // --- API Quên mật khẩu & OTP ---
 

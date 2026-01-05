@@ -37,14 +37,14 @@ const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
         if (validate()) {
             console.log("Dữ liệu gửi về Server:", formData);
             const confirmMsg = initialData
-                ? "Bạn có chắc chắn muốn lưu những thay đổi này không?"
+                ? "Bạn có chắc chắn muốn lưu thay đổi không?"
                 : "Bạn có chắc chắn muốn thêm khách hàng này không?";
 
             if (window.confirm(confirmMsg)) {
                 try {
                     await onSave(formData);
 
-                    toast.success(initialData ? "Cập nhật thành công" : "Thêm mới thành công");
+                    toast.success(initialData ? "Cập nhật thông tin khách hàng thành công" : "Thêm khách hàng thành công");
                     onClose();
                 } catch (error) {
                     toast.error("Lỗi: " + (error.response?.data?.message || "Không thể kết nối đến máy chủ"));
@@ -109,7 +109,7 @@ const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
 
                     <div className="form-row">
                         <div className="form-field">
-                            <label>Nhãn (Label)</label>
+                            <label>Nhãn</label>
                             <select value={formData.Label} onChange={e => setFormData({ ...formData, Label: e.target.value })}>
                                 <option value="Khách lẻ">Khách lẻ</option>
                                 <option value="Khách mới">Khách mới</option>

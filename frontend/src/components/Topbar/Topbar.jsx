@@ -23,6 +23,8 @@ const Topbar = ({ darkMode = false }) => {
     "/orders/delivered": "Đơn hàng",
     "/warehouse": "Kho hàng",
     "/coupons": "Mã giảm giá",
+    "/HistoryControl": "Lịch sử thao tác",
+    "/customers": "Quản lý khách hàng",
   };
 
   const title = routeTitles[location.pathname] || "Mã giảm giá";

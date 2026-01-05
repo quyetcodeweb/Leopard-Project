@@ -9,7 +9,7 @@ import UserManager from "../pages/Admin/UserManager";
 import VoucherManager from "../pages/Admin/VoucherManager";
 import InventoryList from "../pages/Inventory/InventoryList";
 import CustomerList from "../pages/Customers/CustomerList";
-
+import ActivityLog from "../pages/ActivityLog/ActivityLog";
 // ✅ Lazy load trang tổng quan
 const RevenueOverview = lazy(() =>
   import("../pages/Admin/Revenue/RevenueOverview")
@@ -31,7 +31,7 @@ const AllRouters = () => {
       {/* ===== SẢN PHẨM ===== */}
       <Route path="products" element={<ProductList />} />
       <Route path="warehouse" element={<InventoryList />} />
-
+      <Route path="HistoryControl" element={<ActivityLog />} />
       {/* ===== ĐƠN HÀNG ===== */}
       <Route path="HistoryOrder" element={<HistoryOrder />} />
       <Route path="orders/received" element={<Donhang status="daxuly" />} />

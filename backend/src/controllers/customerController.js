@@ -28,10 +28,10 @@ const customerController = {
             const orderIds = orders.map(o => o.OrderID);
 
             const sqlDetails = `
-              SELECT od.OrderID, p.ProductName AS name, od.Quantity AS qty, od.Price AS price 
-              FROM OrderDetail od
-              JOIN Product p ON od.ProductID = p.ProductID
-              WHERE od.OrderID IN (?)`;
+            SELECT od.OrderID, p.ProductName as name, od.Quantity as qty, od.UnitPrice as price 
+            FROM OrderDetail od
+            JOIN Product p ON od.ProductID = p.ProductID
+            WHERE od.OrderID IN (?)`;
 
             db.query(sqlDetails, [orderIds], (err, details) => {
                 if (err) return res.status(500).json({ message: "Lỗi truy vấn chi tiết" });
