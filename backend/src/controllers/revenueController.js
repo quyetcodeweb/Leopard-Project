@@ -3,25 +3,38 @@ import db from "../config/db.js";
 /* ===================== SUMMARY ===================== */
 export const getSummary = (req, res) => {
   let { from, to } = req.query;
+  const today = new Date().toISOString().slice(0, 10);
 
-  // ===== DEFAULT: từ đầu năm đến hiện tại =====
+  // ===== VALIDATION =====
   if (!from || !to) {
-    const now = new Date();
-    to = now.toISOString().slice(0, 10);
-    from = `${now.getFullYear()}-01-01`;
+    return res.status(400).json({
+      message: "Phải chọn đầy đủ ngày bắt đầu và ngày kết thúc",
+    });
+  }
+
+  if (from > to) {
+    return res.status(400).json({
+      message: "Ngày bắt đầu phải nhỏ hơn ngày kết thúc",
+    });
+  }
+
+  if (from > today || to > today) {
+    return res.status(400).json({
+      message: "Thời gian không được vượt quá ngày hiện tại",
+    });
   }
 
   const fromDate = new Date(from);
   const toDate = new Date(to);
 
-  const diffDays =
-    Math.ceil((toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
+  const duration = toDate - fromDate;
+  if (duration < 0) {
+    return res.status(400).json({ message: "Khoảng thời gian không hợp lệ" });
+  }
 
-  const prevTo = new Date(fromDate);
-  prevTo.setDate(prevTo.getDate() - 1);
-
-  const prevFrom = new Date(prevTo);
-  prevFrom.setDate(prevFrom.getDate() - diffDays + 1);
+  // ===== PREVIOUS PERIOD =====
+  const prevFrom = new Date(fromDate.getTime() - duration);
+  const prevTo = new Date(toDate.getTime() - duration);
 
   const f1 = from;
   const t1 = to;
@@ -44,6 +57,14 @@ export const getSummary = (req, res) => {
       AND DATE(OrderDate) BETWEEN ? AND ?
   `;
 
+  const calcPercent = (cur, prev) => {
+    if (prev === 0) {
+      if (cur === 0) return 0;
+      return 100;
+    }
+    return Number((((cur - prev) / prev) * 100).toFixed(1));
+  };
+
   db.query(summarySql, [f1, t1], (e1, cur) => {
     if (e1) return res.status(500).json(e1);
 
@@ -56,25 +77,26 @@ export const getSummary = (req, res) => {
         db.query(customerSql, [f2, t2], (e4, prevCus) => {
           if (e4) return res.status(500).json(e4);
 
-          const calcPercent = (cur, prev) => {
-            if (!prev || prev === 0) return 100;
-            return Number((((cur - prev) / prev) * 100).toFixed(1));
-          };
-
           res.json({
             revenue: {
               value: cur[0].revenue || 0,
-              percent: calcPercent(cur[0].revenue, prev[0].revenue),
+              percent: calcPercent(
+                cur[0].revenue || 0,
+                prev[0].revenue || 0
+              ),
             },
             orders: {
               value: cur[0].orders || 0,
-              percent: calcPercent(cur[0].orders, prev[0].orders),
+              percent: calcPercent(
+                cur[0].orders || 0,
+                prev[0].orders || 0
+              ),
             },
             customers: {
               value: curCus[0].customers || 0,
               percent: calcPercent(
-                curCus[0].customers,
-                prevCus[0].customers
+                curCus[0].customers || 0,
+                prevCus[0].customers || 0
               ),
             },
           });
@@ -87,8 +109,7 @@ export const getSummary = (req, res) => {
 /* ===================== LINE CHART ===================== */
 export const getLineChart = (req, res) => {
   let { from, to } = req.query;
-
-  // ===== DEFAULT: đầu năm → hiện tại =====
+// ===== DEFAULT: đầu năm → hiện tại =====
   if (!from || !to) {
     const now = new Date();
     to = now.toISOString().slice(0, 10);
@@ -207,7 +228,7 @@ export const getTopProducts = (req, res) => {
       p.Image AS image,
       p.Stock AS stock,
       SUM(od.Quantity) AS sold
-    FROM \`Order\` o
+FROM \`Order\` o
     JOIN OrderDetail od ON o.OrderID = od.OrderID
     JOIN Product p ON od.ProductID = p.ProductID
     WHERE o.Status = 'Hoàn thành'
@@ -230,6 +251,3 @@ export const getTopProducts = (req, res) => {
     );
   });
 };
-
-
-

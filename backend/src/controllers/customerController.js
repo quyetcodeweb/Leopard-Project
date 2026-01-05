@@ -51,77 +51,66 @@ const customerController = {
     saveCustomer: (req, res) => {
         const { CustomerID, FullName, Phone, Email, Address, Label, Status } = req.body;
 
-        if (CustomerID && CustomerID !== '') {
+        let checkSql = "SELECT * FROM Customer WHERE (Email = ? OR Phone = ?)";
+        let params = [Email, Phone];
 
-            db.query(
-                "SELECT * FROM Customer WHERE CustomerID = ?",
-                [CustomerID],
-                (err, oldRows) => {
-                    if (err) return res.status(500).json({ message: "Lỗi SQL" });
+        if (CustomerID) {
+            checkSql += " AND CustomerID <> ?";
+            params.push(CustomerID);
+        }
 
-                    const oldCustomer = oldRows[0];
+        db.query(checkSql, params, (err, results) => {
+            if (err) return res.status(500).json({ message: "Lỗi kiểm tra dữ liệu" });
 
-                    const sql = `
-                      UPDATE Customer 
-                      SET FullName=?, Phone=?, Email=?, Address=?, Label=?, Status=? 
-                      WHERE CustomerID=?`;
-
-                    db.query(
-                        sql,
-                        [FullName, Phone, Email, Address, Label, Status, CustomerID],
-                        (err) => {
-                            if (err) return res.status(500).json({ message: "Lỗi SQL: " + err.sqlMessage });
-
-                            createAuditLog({
-                                userId: req.user?.id,
-                                username: req.user?.username,
-                                role: req.user?.role,
-                                action: "UPDATE",
-                                entity: "customer",
-                                entityId: CustomerID,
-                                oldValue: oldCustomer,
-                                newValue: { FullName, Phone, Email, Address, Label, Status },
-                                req
-                            });
-
-                            res.json({ message: "Cập nhật thành công" });
-                        }
-                    );
+            if (results.length > 0) {
+                const duplicate = results[0];
+                if (duplicate.Email === Email && Email !== '') {
+                    return res.status(400).json({ message: "Email đã tồn tại" });
                 }
-            );
+                if (duplicate.Phone === Phone) {
+                    return res.status(400).json({ message: "Số điện thoại đã tồn tại" });
+                }
+            }
 
-        } else {
-
-            const sql = `
-              INSERT INTO Customer (FullName, Phone, Email, Address, Label, Status) 
-              VALUES (?, ?, ?, ?, ?, ?)`;
-
-            db.query(
-                sql,
-                [FullName, Phone, Email, Address, Label, Status],
-                (err, result) => {
-                    if (err) {
-                        return res.status(500).json({ message: "Không thể thêm mới: " + err.sqlMessage });
-                    }
+            if (CustomerID && CustomerID !== '') {
+                const sql = "UPDATE Customer SET FullName=?, Phone=?, Email=?, Address=?, Label=?, Status=? WHERE CustomerID=?";
+                db.query(sql, [FullName, Phone, Email, Address, Label, Status, CustomerID], (err, result) => {
+                    if (err) return res.status(500).json({ message: "Lỗi SQL: " + err.sqlMessage });
+                    createAuditLog({
+                                    userId: req.user?.id,
+                                    username: req.user?.username,
+                                    role: req.user?.role,
+                                    action: "UPDATE",
+                                    entity: "customer",
+                                    entityId: CustomerID,
+                                    oldValue: oldCustomer,
+                                    newValue: { FullName, Phone, Email, Address, Label, Status },
+                                    req
+                                });
+                    res.json({ message: "Cập nhật thành công" });
+                });
+            } else {
+                const sql = "INSERT INTO Customer (FullName, Phone, Email, Address, Label, Status) VALUES (?, ?, ?, ?, ?, ?)";
+                db.query(sql, [FullName, Phone, Email, Address, Label, Status], (err, result) => {
+                    if (err) return res.status(500).json({ message: "Không thể thêm mới: " + err.sqlMessage });
 
                     createAuditLog({
-                        userId: req.user?.id,
-                        username: req.user?.username,
-                        role: req.user?.role,
-                        action: "CREATE",
-                        entity: "customer",
-                        entityId: result.insertId,
-                        oldValue: null,
-                        newValue: { FullName, Phone, Email, Address, Label, Status },
-                        req
-                    });
+                            userId: req.user?.id,
+                            username: req.user?.username,
+                            role: req.user?.role,
+                            action: "CREATE",
+                            entity: "customer",
+                            entityId: result.insertId,
+                            oldValue: null,
+                            newValue: { FullName, Phone, Email, Address, Label, Status },
+                            req
+                        });
 
                     res.json({ message: "Thêm thành công", id: result.insertId });
-                }
-            );
-        }
+                });
+            }
+        });
     },
-
     // ❌ Xóa khách hàng (CÓ LOG)
     deleteCustomer: (req, res) => {
         const id = req.params.id;

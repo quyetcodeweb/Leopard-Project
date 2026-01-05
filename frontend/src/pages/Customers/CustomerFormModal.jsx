@@ -34,8 +34,8 @@ const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         if (validate()) {
-            console.log("Dữ liệu gửi về Server:", formData);
             const confirmMsg = initialData
                 ? "Bạn có chắc chắn muốn lưu thay đổi không?"
                 : "Bạn có chắc chắn muốn thêm khách hàng này không?";
@@ -43,11 +43,20 @@ const CustomerFormModal = ({ isOpen, onClose, onSave, initialData }) => {
             if (window.confirm(confirmMsg)) {
                 try {
                     await onSave(formData);
-
-                    toast.success(initialData ? "Cập nhật thông tin khách hàng thành công" : "Thêm khách hàng thành công");
+                    toast.success(initialData ? "Cập nhật thành công" : "Thêm thành công");
                     onClose();
                 } catch (error) {
-                    toast.error("Lỗi: " + (error.response?.data?.message || "Không thể kết nối đến máy chủ"));
+                    const serverMessage = error.response?.data?.message || "";
+
+                    if (serverMessage.includes("Email")) {
+                        setErrors(prev => ({ ...prev, Email: "Email này đã được sử dụng" }));
+                        toast.error("Lỗi: Email đã tồn tại");
+                    } else if (serverMessage.includes("Số điện thoại") || serverMessage.includes("Phone")) {
+                        setErrors(prev => ({ ...prev, Phone: "Số điện thoại này đã tồn tại" }));
+                        toast.error("Lỗi: Số điện thoại đã tồn tại");
+                    } else {
+                        toast.error("Lỗi: " + serverMessage);
+                    }
                 }
             }
         }

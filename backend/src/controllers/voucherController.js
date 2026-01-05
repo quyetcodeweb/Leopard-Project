@@ -1,15 +1,18 @@
 import db from "../config/db.js";
-import { createAuditLog } from "../services/auditLog.service.js";
 
+/* =====================
+   UTIL
+===================== */
 const toSQLDateTime = (dt) => {
   if (!dt) return null;
   let d = dt.trim();
+
   if (/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}$/.test(d)) return `${d}:00`;
   if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return `${d} 00:00:00`;
+
   if (/\d{4}-\d{2}-\d{2}T/.test(d)) {
     d = d.replace("T", " ").replace("Z", "");
-    d = d.split(".")[0];
-    return d;
+    return d.split(".")[0];
   }
   return d;
 };
@@ -20,9 +23,9 @@ const computeStatusSQL = `CASE
   ELSE 1
 END`;
 
-// =====================
-// GET LIST + FILTER (NO LOG)
-// =====================
+/* =====================
+   GET LIST
+===================== */
 export const getVouchers = (req, res) => {
   const { search = "", type = "", status = "", start = "", end = "" } = req.query;
 
@@ -66,19 +69,46 @@ export const getVouchers = (req, res) => {
   }
 
   db.query(sql, params, (err, result) => {
-    if (err) return res.status(500).json({ message: "Server error", err });
+    if (err) {
+      console.error("getVouchers error:", err);
+      return res.status(500).json({ message: "Server error", err });
+    }
     res.json(result);
   });
 };
 
-// =====================
-// CREATE (CÓ LOG)
-// =====================
+/* =====================
+   CREATE
+===================== */
 export const addVoucher = (req, res) => {
-  const { code, type, discountValue, startDate, expirationDate, maxUse, status } = req.body;
+  const {
+    code,
+    type,
+    discountValue,
+    startDate,
+    expirationDate,
+    maxUse,
+    status,
+  } = req.body;
 
   if (!code || discountValue === undefined || !expirationDate) {
     return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const start = startDate ? new Date(startDate) : null;
+  const end = expirationDate ? new Date(expirationDate) : null;
+
+  // ✅ RÀNG BUỘC THỜI GIAN
+  if (start && !end) {
+    return res.status(400).json({
+      message: "Voucher phải có ngày kết thúc",
+    });
+  }
+
+  if (start && end && start >= end) {
+    return res.status(400).json({
+      message: "Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc",
+    });
   }
 
   let discountPercent = 0;
@@ -86,16 +116,6 @@ export const addVoucher = (req, res) => {
 
   if (type === "%") discountPercent = Number(discountValue);
   if (type === "VND") discountAmount = Number(discountValue);
-
-  const newVoucher = {
-    Code: code,
-    DiscountPercent: discountPercent,
-    DiscountAmount: discountAmount,
-    StartDate: toSQLDateTime(startDate),
-    ExpirationDate: toSQLDateTime(expirationDate),
-    MaxUse: Number(maxUse ?? 1),
-    Status: status !== undefined ? Number(status) : 1
-  };
 
   const sql = `
     INSERT INTO Voucher
@@ -105,34 +125,55 @@ export const addVoucher = (req, res) => {
 
   db.query(
     sql,
-    Object.values(newVoucher),
-    (err, result) => {
-      if (err) return res.status(500).json({ message: "Server error", err });
-
-      // ✅ AUDIT LOG
-      createAuditLog({
-        userId: req.user?.id,
-        username: req.user?.username,
-        role: req.user?.role,
-        action: "CREATE",
-        entity: "voucher",
-        entityId: result.insertId,
-        oldValue: null,
-        newValue: newVoucher,
-        req
-      });
-
+    [
+      code,
+      discountPercent,
+discountAmount,
+      toSQLDateTime(startDate),
+      toSQLDateTime(expirationDate),
+      Number(maxUse ?? 1),
+      Number(status),
+    ],
+    (err) => {
+      if (err) {
+        console.error("addVoucher error:", err);
+        return res.status(500).json({ message: "Server error", err });
+      }
       res.status(201).json({ message: "Voucher created" });
     }
   );
 };
 
-// =====================
-// UPDATE (CÓ LOG)
-// =====================
+/* =====================
+   UPDATE
+===================== */
 export const updateVoucher = (req, res) => {
   const { id } = req.params;
-  const { code, type, discountValue, startDate, expirationDate, maxUse, status } = req.body;
+  const {
+    code,
+    type,
+    discountValue,
+    startDate,
+    expirationDate,
+    maxUse,
+    status,
+  } = req.body;
+
+  const start = startDate ? new Date(startDate) : null;
+  const end = expirationDate ? new Date(expirationDate) : null;
+
+  // ✅ RÀNG BUỘC THỜI GIAN
+  if (start && !end) {
+    return res.status(400).json({
+      message: "Voucher phải có ngày kết thúc",
+    });
+  }
+
+  if (start && end && start >= end) {
+    return res.status(400).json({
+      message: "Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc",
+    });
+  }
 
   let discountPercent = 0;
   let discountAmount = 0;
@@ -140,107 +181,61 @@ export const updateVoucher = (req, res) => {
   if (type === "%") discountPercent = Number(discountValue);
   if (type === "VND") discountAmount = Number(discountValue);
 
-  // Lấy dữ liệu cũ
+  const sql = `
+    UPDATE Voucher
+    SET
+      Code = ?,
+      DiscountPercent = ?,
+      DiscountAmount = ?,
+      StartDate = ?,
+      ExpirationDate = ?,
+      MaxUse = ?,
+      Status = ?
+    WHERE VoucherID = ?
+  `;
+
   db.query(
-    "SELECT * FROM Voucher WHERE VoucherID = ?",
-    [id],
-    (err, rows) => {
-      if (err) return res.status(500).json({ message: "Server error" });
-      if (!rows.length) return res.status(404).json({ message: "Voucher not found" });
-
-      const oldVoucher = rows[0];
-
-      const newVoucher = {
-        Code: code,
-        DiscountPercent: discountPercent,
-        DiscountAmount: discountAmount,
-        StartDate: toSQLDateTime(startDate),
-        ExpirationDate: toSQLDateTime(expirationDate),
-        MaxUse: Number(maxUse),
-        Status: Number(status)
-      };
-
-      const sql = `
-        UPDATE Voucher
-        SET Code=?, DiscountPercent=?, DiscountAmount=?, StartDate=?, ExpirationDate=?, MaxUse=?, Status=?
-        WHERE VoucherID=?
-      `;
-
-      db.query(
-        sql,
-        [...Object.values(newVoucher), id],
-        (err2) => {
-          if (err2) return res.status(500).json({ message: "Server error" });
-
-          // ✅ AUDIT LOG
-          createAuditLog({
-            userId: req.user?.id,
-            username: req.user?.username,
-            role: req.user?.role,
-            action: "UPDATE",
-            entity: "voucher",
-            entityId: id,
-            oldValue: oldVoucher,
-            newValue: newVoucher,
-            req
-          });
-
-          res.json({ message: "Voucher updated successfully" });
-        }
-      );
+    sql,
+    [
+      code,
+      discountPercent,
+      discountAmount,
+      toSQLDateTime(startDate),
+      toSQLDateTime(expirationDate),
+      Number(maxUse),
+      Number(status),
+      id,
+    ],
+    (err) => {
+      if (err) {
+        console.error("updateVoucher error:", err);
+        return res.status(500).json({ message: "Server error", err });
+      }
+      res.json({ message: "Voucher updated successfully" });
     }
   );
 };
 
-// =====================
-// DELETE (CÓ LOG)
-// =====================
+/* =====================
+   DELETE
+===================== */
 export const deleteVoucher = (req, res) => {
   const { id } = req.params;
-
-  db.query(
-    "SELECT * FROM Voucher WHERE VoucherID = ?",
-    [id],
-    (err, rows) => {
-      if (err) return res.status(500).json({ message: "Server error" });
-      if (!rows.length) return res.status(404).json({ message: "Voucher not found" });
-
-      const oldVoucher = rows[0];
-
-      db.query(
-        "DELETE FROM Voucher WHERE VoucherID = ?",
-        [id],
-        (err2, result) => {
-          if (err2) return res.status(500).json({ message: "Server error" });
-
-          // ✅ AUDIT LOG
-          createAuditLog({
-            userId: req.user?.id,
-            username: req.user?.username,
-            role: req.user?.role,
-            action: "DELETE",
-            entity: "voucher",
-            entityId: id,
-            oldValue: oldVoucher,
-            newValue: null,
-            req
-          });
-
-          res.json({ message: "Voucher deleted", affectedRows: result.affectedRows });
-        }
-      );
-    }
-  );
+  db.query("DELETE FROM Voucher WHERE VoucherID = ?", [id], (err, result) => {
+    if (err) return res.status(500).json({ message: "Server error", err });
+    res.json({ message: "Voucher deleted", affectedRows: result.affectedRows });
+  });
 };
 
-// =====================
-// APPLY (NO LOG)
-// =====================
+/* =====================
+   APPLY
+===================== */
 export const applyVoucher = (req, res) => {
   const { code } = req.body;
   db.query("SELECT * FROM Voucher WHERE Code = ?", [code], (err, rows) => {
-    if (err || !rows.length)
+    if (err || !rows.length) {
       return res.status(404).json({ message: "Voucher not found" });
+    }
     res.json(rows[0]);
   });
 };
